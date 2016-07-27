@@ -43,7 +43,8 @@ public class Word {
 		return "Word: " + this.getValue() + " | "
 				+ "definition: " + this.getDefinitions() + " | "
 				+ "synonyms: " + this.getSynonyms() + " | "
-				+ "antonyms: " + this.getAntonyms();
+				+ "antonyms: " + this.getAntonyms() + " | "
+				+ "part of speech: "+ this.getPOS();
 	}
 
 
