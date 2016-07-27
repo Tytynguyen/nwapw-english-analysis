@@ -8,14 +8,6 @@ import java.net.URL;
 
 public class WordInfo {
 	private static final String thesaurusApiKey = "Jcglr2EapVZhu3ucPZsc";
-	private static final String word = "drive";
-
-	public static void main(String[] args) throws Exception{
-		LinkedList<String> list = getFullInfoWords(word).getFirst().getSynonyms();
-		for(String s: list){
-			System.out.println(s);
-		}
-	}
 	
 	public static LinkedList<Word> getFullInfoWords(String word) throws Exception{
 		LinkedList<Word> words = getDictionaryWords(word);
@@ -52,11 +44,12 @@ public class WordInfo {
 							str = str.substring(1,str.length()-1);
 							definitions.add(str);
 						}
-						words.add(new Word(headword,partOfSpeech,definitions));
 					}
+					words.add(new Word(headword,partOfSpeech,definitions));
 				}
 			}
 		}
+		System.out.println("DictionaryEnd: Size: " + words.size());
 		return words;
 	}
 	
@@ -79,7 +72,7 @@ public class WordInfo {
 					if(pos.equals(word.getPOS())){
 						String data = list.getJsonString("synonyms").toString();
 						data = data.substring(1, data.length()-1);
-						String[] dataArr = data.split("|");
+						String[] dataArr = data.split("\\|");
 						for(String str : dataArr){
 							str = str.replace(" (related term)", "");
 							if(str.contains(" (antonym")){
