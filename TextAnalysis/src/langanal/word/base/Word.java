@@ -1,4 +1,4 @@
-package lang.anal.word;
+package langanal.word.base;
 
 import java.util.LinkedList;
 
@@ -15,6 +15,7 @@ public class Word {
 		this.definition = definitions;
 		this.synonyms = synonyms;
 		this.antonyms = antonyms;
+
 	}
 	
 	public String getValue(){	return this.value; 	}
