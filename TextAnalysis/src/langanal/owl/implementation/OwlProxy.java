@@ -1,6 +1,7 @@
 package langanal.owl.implementation;
 
 import java.io.File;
+import java.util.*;
 
 import org.semanticweb.owlapi.apibinding.*;
 import org.semanticweb.owlapi.model.*;
@@ -32,12 +33,24 @@ public class OWLProxy {
     		System.err.println(e);
     	}
     }
+    
+    //FIXME return type shouldn't be Strings as they're not a unique identifiers
     /**
      * 
      * 
      * @return
      */
-    public String walkOntology() {
+    private ArrayList<String> walkOntology() {
+    	//create a new set with the only element being the main ontology
+    	//there's no need to use multiple sets here
+    	HashSet<OWLOntology> ontologySet = new HashSet<OWLOntology>();
+    	ontologySet.add(ontology);
+    	
+    	//create a new walker using ontologySet
+    	OWLOntologyWalker walker = new OWLOntologyWalker(ontologySet);
+    	
+    	
     	return null;
     }
+
 }
