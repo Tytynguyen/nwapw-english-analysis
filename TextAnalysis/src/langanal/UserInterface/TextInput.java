@@ -7,43 +7,64 @@ import javax.swing.*;
             */
 class TextInput extends JPanel implements ActionListener {
 
+    public String text1;
+    public String text2;
+    public float relevancy;
+
     protected JTextField textField1;
     protected JTextField textField2;
 
-    protected JButton button;
+    protected JTextArea textArea;
+    protected JTextArea appInfo; //breif description of what to do and what the application does
 
-    public String text1;
-    public String text2;
+    protected JButton button;
 
     public TextInput(){
         super(new GridBagLayout());
 
-        textField1 = new JTextField(20);
-        textField2 = new JTextField(20);
-
-        //Add componets to this panel
         GridBagConstraints c = new GridBagConstraints();
         c.gridwidth = GridBagConstraints.REMAINDER;
-
         c.fill = GridBagConstraints.HORIZONTAL;
-        add(textField1, c);
-        add(textField2, c);
 
         c.fill = GridBagConstraints.BOTH;
         c.weightx = 1.0;
         c.weighty = 1.0;
 
+        //text area for description
+        String description = "   Hello, this is an application designed to determine \n   the relativity of two words. " +
+                "Please enter one word \n   each in the areas below and press \"Compute\" ";
+        appInfo = new JTextArea(description,3,15);
+        appInfo.setEditable(false);
+        JScrollPane scrollPane2 = new JScrollPane(appInfo);
+        add(scrollPane2, c);
+
+        //text input fields
+        textField1 = new JTextField(20);
+        textField2 = new JTextField(20);
+        add(textField1, c);
+        add(textField2, c);
+
+        //button
         button = new JButton("Compute");
         button.setVerticalTextPosition(AbstractButton.CENTER);
         button.setHorizontalTextPosition(AbstractButton.LEADING); //LEFT
         button.setMnemonic(KeyEvent.VK_D);
         button.setActionCommand("disable");
-
-        //Listen for actions on button
         button.addActionListener(this);
-
-        //Add components to this container, using the default FlowLayout
         add(button);
+
+        //text area for output
+        textArea = new JTextArea(TextOutput(relevancy),5,21);
+        textArea.setEditable(false);
+        JScrollPane scrollPane1 = new JScrollPane(textArea);
+        add(scrollPane1, c);
+    }
+
+
+    public static String TextOutput(float relevancyIn){
+        return " Percent Relevant: " + relevancyIn + "%" +
+                "\n Note: The higher the percentage, \n the more the two words have in common" +
+                "\n The lower the percentage, \n the less the tow words have in common";
     }
 
 
@@ -57,7 +78,6 @@ class TextInput extends JPanel implements ActionListener {
         JFrame frame = new JFrame("TextInput");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        //Add contents to the window
         frame.add(new TextInput());
 
         //Display the window
@@ -67,9 +87,10 @@ class TextInput extends JPanel implements ActionListener {
 
     public void actionPerformed(ActionEvent e){
         if(textField1.getText().equals("")||textField2.getText().equals("")){
-        }else{
+        }else {
             text1 = textField1.getText();
             text2 = textField2.getText();
+            textArea.setText(TextOutput(relevancy));
         }
     }
 
