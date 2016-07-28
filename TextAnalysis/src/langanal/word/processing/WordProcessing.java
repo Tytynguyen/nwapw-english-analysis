@@ -1,11 +1,62 @@
 package langanal.word.processing;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import langanal.word.base.Word;
+import langanal.word.base.WordInfo;
 
 public class WordProcessing {
+	//Weights
+	public static float definitionWeight = 1;
+	public static float POSWeight = 0.2f;
+	public static float synonymWeight = 2;
+	public static float antonymWeight = 2;
 
+	private static String[] commonWords = 
+			new String[]{
+					"the", "be", "to", "of", "and", "a", "in","that", "have", "i","it","for","not","not","on","with",
+					"or", "is"
+					};
+
+	/**
+	 * Compares, processes, and returns the relevancy of the two words
+	 * 
+	 * @param word1
+	 * @param word2
+	 * @return The % relevancy
+	 */
+	public static float compareWords(String word1, String word2){
+		float relevancy = 0;	//in %
+
+		LinkedList<Word> allWord1 = new LinkedList<Word>();
+		LinkedList<Word> allWord2 = new LinkedList<Word>();
+		try {
+			allWord1 = WordInfo.getFullInfoWords(word1);
+			allWord2 = WordInfo.getFullInfoWords(word2);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		if(allWord1.size() != 0 && allWord2.size() != 0){
+
+
+			for(Word curWord1 : allWord1){
+				for(Word curWord2 : allWord2){
+					float definitionValue = checkDefinition(curWord1, curWord2)*definitionWeight;
+					float POSValue = checkPOS(curWord1, curWord2)*POSWeight;
+					float synonymValue = checkSynonyms(curWord1,curWord2)*synonymWeight;
+					float antonymValue = checkAntonyms(curWord1,curWord2)*antonymWeight;
+
+					relevancy += (definitionValue + POSValue + synonymValue + antonymValue);
+				}
+			}
+		}else{
+			System.out.println("ERROR: One of the words was not found in the dictionary or thesaurus. Check your spelling.");
+		}
+		return relevancy;
+
+	}
 	/**
 	 * Counts the repetition of words in each definition
 	 * 
@@ -27,7 +78,6 @@ public class WordProcessing {
 			}
 		}
 
-		System.out.println("Words 1: " + definitionWords1);
 		//Fills definitionWords2
 		for(String fullDefW2 : word2.getDefinitions()){
 			ArrayList<String> defWordList2 = definitionToWords(fullDefW2);
@@ -36,14 +86,18 @@ public class WordProcessing {
 				definitionWords2.add(curWord);
 			}
 		}
-		System.out.println("Words 2: " + definitionWords2);
 
+		//Clears common words
+		for(int i = 0;i<definitionWords1.size();i++){
+
+		}
 		//Checks for repetitions
-
 		for(String persistWord : definitionWords1){
 			for(String checkingWord : definitionWords2){
 				if(persistWord.equals(checkingWord)){
-					definitionRepeats++;
+					if(!isCommonWord(persistWord)){
+						definitionRepeats++;
+					}
 				}
 			}
 		}
@@ -63,6 +117,24 @@ public class WordProcessing {
 			returnList.add(word.trim());
 		}
 		return returnList;
+	}
+
+	/**
+	 * Determines whether the inputted word is a common one
+	 * 
+	 * @param word
+	 * @return Boolean whether the inputted word is a common word
+	 */
+	private static Boolean isCommonWord(String word){
+		boolean isIn = false;
+
+		for(String s : commonWords){
+			if(word.equals(s)){
+				isIn = true;
+			}
+		}
+
+		return isIn;
 	}
 
 	/**
@@ -92,13 +164,13 @@ public class WordProcessing {
 
 		int repeatedSynonyms = 0; //holds the # of repeated pairs of similarity words
 
-		for(String s : word1.getSynonyms()){
+		for(String s : cleanSynonyms(word1.getSynonyms())){
 			synonymsWord1.add(s);
 		}
-		for(String s : word2.getSynonyms()){
+		for(String s : cleanSynonyms(word2.getSynonyms())){
 			synonymsWord2.add(s);
 		}
-
+		
 		for(String curSynonymWord1 : synonymsWord1){
 			for(String curSynonymWord2 : synonymsWord2) {
 				if(curSynonymWord1.equals(curSynonymWord2)){
@@ -106,8 +178,23 @@ public class WordProcessing {
 				}
 			}
 		}
-
 		return repeatedSynonyms;
+	}
+	
+	/**
+	 * Cleans and formats the ArrayList for the checkSynonyms function
+	 * @param list
+	 * @return cleaned and formatted list
+	 */
+	private static ArrayList<String> cleanSynonyms(LinkedList<String> list){
+		ArrayList<String> returnList = new ArrayList<String>();
+
+		for(String s : list){
+			for(String x : s.split(" ")){
+				returnList.add(x);
+			}
+		}
+		return returnList;
 	}
 
 	/**
