@@ -5,7 +5,7 @@ import javax.swing.*;
 /**
  * Created by SteinJac.ao on 7/27/2016.
             */
-class TextInput extends JPanel implements ActionListener {
+class GUI extends JPanel implements ActionListener {
 
     public String text1;
     public String text2;
@@ -19,7 +19,7 @@ class TextInput extends JPanel implements ActionListener {
 
     protected JButton button;
 
-    public TextInput(){
+    public GUI(){
         super(new GridBagLayout());
 
         GridBagConstraints c = new GridBagConstraints();
@@ -75,10 +75,10 @@ class TextInput extends JPanel implements ActionListener {
      */
     private static void createAndShowGUI(){
         //Create and set up the window
-        JFrame frame = new JFrame("TextInput");
+        JFrame frame = new JFrame("GUI");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        frame.add(new TextInput());
+        frame.add(new GUI());
 
         //Display the window
         frame.pack();
