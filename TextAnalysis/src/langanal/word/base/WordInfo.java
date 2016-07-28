@@ -57,7 +57,6 @@ public class WordInfo {
 				}
 			}
 		}
-		System.out.println("DictionaryEnd: Size: " + words.size());
 		return words;
 	}
 	
@@ -84,13 +83,14 @@ public class WordInfo {
 					pos = pos.substring(2, pos.length()-2);
 					
 					//checks if result is relevant to current word, if it is, then adds synonyms and antonyms to word
-					if(pos.equals(word.getPOS())){
+					if(word.getPOS().contains(pos)){
 						String data = list.getJsonString("synonyms").toString();
 						data = data.substring(1, data.length()-1);
 						String[] dataArr = data.split("\\|");
 						for(String str : dataArr){
 							str = str.replace(" (related term)", "");
-							if(str.contains(" (antonym")){
+							str = str.replace(" (similar term)", "");
+							if(str.contains(" (antonym)")){
 								str = str.replace(" (antonym)", "");
 								antonyms.add(str);
 							} else {
