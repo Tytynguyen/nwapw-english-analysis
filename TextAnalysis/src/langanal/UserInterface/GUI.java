@@ -7,6 +7,7 @@ import langanal.word.processing.WordProcessing;
 /**
  * Created by SteinJac.ao on 7/27/2016.
             */
+@SuppressWarnings("serial")
 class GUI extends JPanel implements ActionListener {
 
     public String text1;

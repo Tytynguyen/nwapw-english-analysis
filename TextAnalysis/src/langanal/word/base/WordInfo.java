@@ -3,7 +3,6 @@ package langanal.word.base;
 import javax.json.*;
 import java.util.LinkedList;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 public class WordInfo {
@@ -39,7 +38,7 @@ public class WordInfo {
 
 			//going through each word result
 			for(JsonObject result : results.getValuesAs(JsonObject.class)){
-				LinkedList<String> definitions = new LinkedList();
+				LinkedList<String> definitions = new LinkedList<String>();
 				String headword;
 				String partOfSpeech;
 
