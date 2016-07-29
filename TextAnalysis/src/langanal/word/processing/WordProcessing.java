@@ -12,7 +12,7 @@ public class WordProcessing {
 	public static float POSWeight = 0.2f;
 	public static float synonymWeight = 1;
 	public static float antonymWeight = 1;
-	
+
 	public static boolean debugging = false;
 
 	private static String[] commonWords = 
@@ -31,14 +31,13 @@ public class WordProcessing {
 	public static float compareWords(String word1, String word2){
 		float relevancy = 0;	//in %
 
+		//Stores the words with the same spelling into one LinkedList
 		LinkedList<Word> allWord1 = new LinkedList<Word>();
 		LinkedList<Word> allWord2 = new LinkedList<Word>();
-		try {
+	
 			allWord1 = WordInfo.getFullInfoWords(word1);
 			allWord2 = WordInfo.getFullInfoWords(word2);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+
 
 		if(allWord1.size() != 0 && allWord2.size() != 0){
 			for(Word curWord1 : allWord1){
@@ -55,14 +54,19 @@ public class WordProcessing {
 						System.out.println("\tsynonym: " + synonymValue);
 						System.out.println("\tantonym: " + antonymValue);
 					}
-					
+
 					relevancy += (definitionValue + POSValue + synonymValue + antonymValue);
 
 				}
 			}
+			/*
+			 * Plots the rough weighted data from before on a sigmoid function.
+			 * This is used to transfer the earlier rough numbers into a percentage number
+			 */
 			relevancy = (float) (200*(1/(1+Math.pow(Math.E,-(relevancy/5)))-0.5));
+		
 		}else{
-			System.out.println("ERROR: One of the words was not found in the dictionary or thesaurus. Check your spelling.");
+			System.err.println("ERROR: One of the words was not found in the dictionary or thesaurus. Check your spelling.");
 		}
 		return relevancy;
 
@@ -174,10 +178,10 @@ public class WordProcessing {
 
 		int repeatedSynonyms = 0; //holds the # of repeated pairs of similarity words
 
-		for(String s : cleanSynonyms(word1.getSynonyms())){
+		for(String s : splitThesaurusWords(word1.getSynonyms())){
 			synonymsWord1.add(s);
 		}
-		for(String s : cleanSynonyms(word2.getSynonyms())){
+		for(String s : splitThesaurusWords(word2.getSynonyms())){
 			synonymsWord2.add(s);
 		}
 
@@ -192,22 +196,6 @@ public class WordProcessing {
 	}
 
 	/**
-	 * Cleans and formats the ArrayList for the checkSynonyms function
-	 * @param list
-	 * @return cleaned and formatted list
-	 */
-	private static ArrayList<String> cleanSynonyms(LinkedList<String> list){
-		ArrayList<String> returnList = new ArrayList<String>();
-
-		for(String s : list){
-			for(String x : s.split(" ")){
-				returnList.add(x);
-			}
-		}
-		return returnList;
-	}
-
-	/**
 	 * Checks to see if two words share any antonyms
 	 * @param word1
 	 * @param word2
@@ -219,10 +207,10 @@ public class WordProcessing {
 
 		int repeatedAntonyms = 0; //holds the # of repeated pairs of similarity words
 
-		for(String s : word1.getAntonyms()){
+		for(String s : splitThesaurusWords(word1.getAntonyms())){
 			antonymsWord1.add(s);
 		}
-		for(String s : word2.getAntonyms()){
+		for(String s : splitThesaurusWords(word2.getAntonyms())){
 			antonymsWord2.add(s);
 		}
 
@@ -235,5 +223,22 @@ public class WordProcessing {
 		}
 
 		return repeatedAntonyms;
+	}
+	
+	/**
+	 * Splits the words in input linkedlist by spaces, meaning that 
+	 * each item in the returned linkedlist is one word.
+	 * @param list
+	 * @return cleaned and formatted list. Each object is a single word with no spaces
+	 */
+	private static ArrayList<String> splitThesaurusWords(LinkedList<String> list){
+		ArrayList<String> returnList = new ArrayList<String>();
+
+		for(String s : list){
+			for(String x : s.split(" ")){
+				returnList.add(x);
+			}
+		}
+		return returnList;
 	}
 }

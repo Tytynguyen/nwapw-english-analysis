@@ -11,10 +11,18 @@ public class WordInfo {
 	
 	
 	//Takes a String, outputs list of Words with that spelling which have definition, part of speech, and synonyms and antonyms filled in
-	public static LinkedList<Word> getFullInfoWords(String word) throws Exception{
-		LinkedList<Word> words = getDictionaryWords(word); 
-		addThesaurusInfo(words); 
-		return words;
+	public static LinkedList<Word> getFullInfoWords(String word){
+
+		LinkedList<Word> words;
+		try {
+			words = getDictionaryWords(word);
+			addThesaurusInfo(words);
+			return words;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		return new LinkedList<Word>();
 	}
 	
 	//Takes a String, outputs list of Words with that spelling which have definition and part of speech filled in
@@ -57,7 +65,6 @@ public class WordInfo {
 				}
 			}
 		}
-		System.out.println("DictionaryEnd: Size: " + words.size());
 		return words;
 	}
 	
@@ -84,13 +91,14 @@ public class WordInfo {
 					pos = pos.substring(2, pos.length()-2);
 					
 					//checks if result is relevant to current word, if it is, then adds synonyms and antonyms to word
-					if(pos.equals(word.getPOS())){
+					if(word.getPOS().contains(pos)){
 						String data = list.getJsonString("synonyms").toString();
 						data = data.substring(1, data.length()-1);
 						String[] dataArr = data.split("\\|");
 						for(String str : dataArr){
 							str = str.replace(" (related term)", "");
-							if(str.contains(" (antonym")){
+							str = str.replace(" (similar term)", "");
+							if(str.contains(" (antonym)")){
 								str = str.replace(" (antonym)", "");
 								antonyms.add(str);
 							} else {
