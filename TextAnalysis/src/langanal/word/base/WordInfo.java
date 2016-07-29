@@ -11,10 +11,18 @@ public class WordInfo {
 	
 	
 	//Takes a String, outputs list of Words with that spelling which have definition, part of speech, and synonyms and antonyms filled in
-	public static LinkedList<Word> getFullInfoWords(String word) throws Exception{
-		LinkedList<Word> words = getDictionaryWords(word); 
-		addThesaurusInfo(words); 
-		return words;
+	public static LinkedList<Word> getFullInfoWords(String word){
+
+		LinkedList<Word> words;
+		try {
+			words = getDictionaryWords(word);
+			addThesaurusInfo(words);
+			return words;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		return new LinkedList<Word>();
 	}
 	
 	//Takes a String, outputs list of Words with that spelling which have definition and part of speech filled in
