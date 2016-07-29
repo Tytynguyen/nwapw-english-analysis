@@ -66,7 +66,7 @@ class GUI extends JPanel implements ActionListener {
     public static String TextOutput(float relevancyIn){
         return " Percent Relevant: " + relevancyIn + "%" +
                 "\n Note: The higher the percentage, \n the more the two words have in common" +
-                "\n The lower the percentage, \n the less the tow words have in common";
+                "\n The lower the percentage, \n the less the two words have in common";
     }
 
 
