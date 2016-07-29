@@ -8,16 +8,18 @@ import langanal.word.base.WordInfo;
 
 public class WordProcessing {
 	//Weights
-	public static float definitionWeight = 1;
+	public static float definitionWeight = .5f;
 	public static float POSWeight = 0.2f;
-	public static float synonymWeight = 2;
-	public static float antonymWeight = 2;
+	public static float synonymWeight = 1;
+	public static float antonymWeight = 1;
+	
+	public static boolean debugging = false;
 
 	private static String[] commonWords = 
 			new String[]{
 					"the", "be", "to", "of", "and", "a", "in","that", "have", "i","it","for","not","not","on","with",
 					"or", "is"
-					};
+	};
 
 	/**
 	 * Compares, processes, and returns the relevancy of the two words
@@ -39,8 +41,6 @@ public class WordProcessing {
 		}
 
 		if(allWord1.size() != 0 && allWord2.size() != 0){
-
-
 			for(Word curWord1 : allWord1){
 				for(Word curWord2 : allWord2){
 					float definitionValue = checkDefinition(curWord1, curWord2)*definitionWeight;
@@ -48,9 +48,19 @@ public class WordProcessing {
 					float synonymValue = checkSynonyms(curWord1,curWord2)*synonymWeight;
 					float antonymValue = checkAntonyms(curWord1,curWord2)*antonymWeight;
 
+					if(debugging){
+						System.out.println("Compare:");
+						System.out.println("\tdefinition: " + definitionValue);
+						System.out.println("\tPOS: " + POSValue);
+						System.out.println("\tsynonym: " + synonymValue);
+						System.out.println("\tantonym: " + antonymValue);
+					}
+					
 					relevancy += (definitionValue + POSValue + synonymValue + antonymValue);
+
 				}
 			}
+			relevancy = (float) (200*(1/(1+Math.pow(Math.E,-(relevancy/5)))-0.5));
 		}else{
 			System.out.println("ERROR: One of the words was not found in the dictionary or thesaurus. Check your spelling.");
 		}
@@ -170,7 +180,7 @@ public class WordProcessing {
 		for(String s : cleanSynonyms(word2.getSynonyms())){
 			synonymsWord2.add(s);
 		}
-		
+
 		for(String curSynonymWord1 : synonymsWord1){
 			for(String curSynonymWord2 : synonymsWord2) {
 				if(curSynonymWord1.equals(curSynonymWord2)){
@@ -180,7 +190,7 @@ public class WordProcessing {
 		}
 		return repeatedSynonyms;
 	}
-	
+
 	/**
 	 * Cleans and formats the ArrayList for the checkSynonyms function
 	 * @param list
