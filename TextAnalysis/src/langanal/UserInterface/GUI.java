@@ -18,7 +18,7 @@ class GUI extends JPanel implements ActionListener {
     protected JTextField textField2;
 
     protected JTextArea textArea;
-    protected JTextArea appInfo; //breif description of what to do and what the application does
+    protected JTextArea appInfo; //brief description of what to do and what the application does
 
     protected JButton button;
 
