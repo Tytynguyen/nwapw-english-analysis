@@ -1,7 +1,9 @@
-package UserInterface;
+package langanal.UserInterface;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+
+import langanal.word.processing.WordProcessing;
 /**
  * Created by SteinJac.ao on 7/27/2016.
             */
@@ -90,6 +92,7 @@ class GUI extends JPanel implements ActionListener {
         }else {
             text1 = textField1.getText();
             text2 = textField2.getText();
+            this.relevancy = WordProcessing.compareWords(text1, text2);
             textArea.setText(TextOutput(relevancy));
         }
     }
