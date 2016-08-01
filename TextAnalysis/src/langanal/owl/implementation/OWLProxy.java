@@ -16,7 +16,7 @@ import uk.ac.manchester.cs.owl.owlapi.*;
 public class OWLProxy {
 
 	
-	File sumoXML = new File("TextAnalysis/src/langanal/owl/implementation/SUMO.owl");
+	File sumoXML = new File("src/langanal/owl/implementation/SUMO.owl");
    
 	//cast should be fine since OWLOntologyManagerImpl implements OWLOntologyManager
 	private OWLOntologyManagerImpl manager = (OWLOntologyManagerImpl) OWLManager.createOWLOntologyManager();
