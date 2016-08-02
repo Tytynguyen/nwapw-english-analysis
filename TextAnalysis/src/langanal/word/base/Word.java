@@ -8,14 +8,16 @@ public class Word {
 	private LinkedList<String> definitions;
 	private String POS; //Part of speech 'verb' , 'noun' , 'adjective', etc.
 	private LinkedList<String> synonyms,antonyms;
+	private String exampleSentence;
 
 
-	public Word(String value, String POS, LinkedList<String> definitions){
+	public Word(String value, String POS, LinkedList<String> definitions, String exampleSentence){
 		this.value = value;
 		this.POS = POS;
 		this.definitions = definitions;
-		this.synonyms = new LinkedList<String>();
-		this.antonyms = new LinkedList<String>();
+		this.exampleSentence = exampleSentence;
+		this.synonyms = new LinkedList<>();
+		this.antonyms = new LinkedList<>();
 	}
 
 	public String getValue(){	return this.value; 	}
@@ -23,6 +25,7 @@ public class Word {
 	public String getPOS(){	return this.POS;	}
 	public LinkedList<String> getSynonyms(){	return this.synonyms;	}
 	public LinkedList<String> getAntonyms(){	return this.antonyms;	}
+	public String getExample(){		return this.exampleSentence;	}
 	
 	public void setDefinitions(LinkedList<String> definitions){
 		this.definitions = definitions;
