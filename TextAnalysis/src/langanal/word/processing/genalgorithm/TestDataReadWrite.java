@@ -130,14 +130,17 @@ public class TestDataReadWrite {
 			while((line = in.readLine()) != null){
 				splitLine = line.split(" ");
 				returnWords.add(new ArrayList<LinkedList<Word>>());
-				
-				System.out.println("Word 1: " + splitLine[0]);
+
 				returnWords.get(linenum).add(WordInfo.getDictionaryWords(splitLine[0]));
-				
-				System.out.println("Word 2: " + splitLine[1]);
 				returnWords.get(linenum).add(WordInfo.getDictionaryWords(splitLine[1]));
 				
-				returnRelevant.add(Boolean.parseBoolean(splitLine[2]));
+				if(splitLine[2].toString().equals("1")){
+					returnRelevant.add(true);
+				}else if(splitLine[2].toString().equals("0")){
+					returnRelevant.add(false);
+				}else{
+					System.err.println("There is no boolean at line: " + linenum);
+				}
 				
 				linenum++;
 			}

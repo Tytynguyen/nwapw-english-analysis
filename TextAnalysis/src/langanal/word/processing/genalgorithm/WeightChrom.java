@@ -47,6 +47,9 @@ public class WeightChrom implements Comparable{
 				"]}";
 	}
 
+	/**
+	 * Compares by fitness
+	 */
 	@Override
 	public int compareTo(Object o) {
 		WeightChrom other = (WeightChrom) o;

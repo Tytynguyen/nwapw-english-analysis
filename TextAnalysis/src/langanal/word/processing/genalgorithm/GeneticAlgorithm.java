@@ -17,9 +17,8 @@ import langanal.word.processing.WordProcessing;
 
 public class GeneticAlgorithm {
 	private final int populationSize = 100;	//size of each population
-	private final float crossover = 0.7f;	//% of crossover
+	private final float crossoverRate = 0.7f;	//% of crossover
 	private final float mutationRate = 0.2f;	//% of mutation
-	private int gen;	//current generation
 	private int lastID; //stores last used ID
 
 	private final Random rand = new Random();
@@ -32,8 +31,9 @@ public class GeneticAlgorithm {
 	private ArrayList<Boolean> testRelevant;
 
 	private String defaultTestData = "testwords.data";
-	
-	public ArrayList<WeightChrom> currentPopulation;
+
+	private ArrayList<WeightChrom> currentPopulation;
+	private ArrayList<WeightChrom> newPopulation;
 
 	/**
 	 *Stores manually set weights, which should be the best ones.
@@ -50,8 +50,8 @@ public class GeneticAlgorithm {
 	}
 
 	GeneticAlgorithm(){
-		this.gen=0;
 		initPopulation(this.populationSize);
+		loadTestData("");
 	}
 
 	/**
@@ -72,7 +72,76 @@ public class GeneticAlgorithm {
 	}
 
 	/**
-	 * Crosses over the data, swapping a randomly selected weight
+	 * Runs the genetic algorithm for specific number of generations.
+	 * @param maxGenerations Max number of generations
+	 * @return Weight chromosomes sorted by worse fitness to best fitness
+	 */
+	public ArrayList<WeightChrom> runAlgorithm(int maxGenerations){
+		for(int gen = 0; gen<maxGenerations ; gen++){
+			this.newPopulation = new ArrayList<WeightChrom>();
+			for(int newPop = 0; newPop<this.populationSize; newPop+=2){
+				WeightChrom chrom1 = null;
+				WeightChrom chrom2 = null;
+
+				/**
+				 * Roulette
+				 */
+				ArrayList<WeightChrom> sortedList = 
+						calcFitness(this.currentPopulation, this.testWords, this.testRelevant);
+				//Chrom1
+				float chromRoulette = rand.nextFloat();
+				for(WeightChrom cur : sortedList){
+					if(cur.fitness > chromRoulette){
+						chrom1 = cur;
+					}
+				}
+				//chrom2
+				chromRoulette = rand.nextFloat();
+				for(WeightChrom cur : sortedList){
+					if(cur.fitness > chromRoulette){
+						chrom2 = cur;
+					}
+				}
+
+				while(chrom1.id == chrom2.id){	//lazy
+					chromRoulette = rand.nextFloat();
+					for(WeightChrom cur : sortedList){
+						if(cur.fitness > chromRoulette){
+							chrom2 = cur;
+						}
+					}
+				}
+
+				/**
+				 * Crossover
+				 */
+				if(rand.nextFloat()<this.crossoverRate){
+					crossover(chrom1, chrom2);
+				}
+
+				/**
+				 * Mutation
+				 */
+				for(int g = 0; g<chrom1.getWeights().length ; g++){
+					if(rand.nextFloat()<this.mutationRate){
+						mutate(chrom1, g);
+					}
+					if(rand.nextFloat()<this.mutationRate){
+						mutate(chrom2, g);
+					}
+				}
+
+				newPopulation.add(chrom1);
+				newPopulation.add(chrom2);
+			}
+			this.currentPopulation = this.newPopulation;
+		}
+		Collections.sort(newPopulation);
+		return newPopulation;
+	}
+
+	/**
+	 * Crosses over two chromosomes' data, swapping a randomly selected weight
 	 * @param first Chromosome to be crossed over
 	 * @param second Other chromosome to be crossed over
 	 * @return Integer of the gene that was crossed over. Check WeightChrom for key.
@@ -89,18 +158,17 @@ public class GeneticAlgorithm {
 	/**
 	 * Mutates a chromosome at a random gene, giving it a random value
 	 * @param chromosome WeightChrom to be mutated
+	 * @param gene the gene to be mutated, see WeightChrom for key
 	 * @return The gene's new value
 	 */
-	private float mutate(WeightChrom chromosome){
-		int gene = this.rand.nextInt(chromosome.getWeights().length);
-
+	private float mutate(WeightChrom chromosome, int gene){
 		chromosome.getWeights()[gene] = rand.nextFloat()*10;
 		return chromosome.getWeights()[gene];
 	}
 
 	/**
 	 * Calculates the fitness of each individual in a population
-	 * @param chrom WeightChrom to be calculated
+	 * @param population Population of WeightChrom to be calculated
 	 * @param wordpairs The test words to be used
 	 * @param relevant ArrayList of booleans whether the pairs relate
 	 * @return a sorted roulette wheel of chromosomes
@@ -109,12 +177,12 @@ public class GeneticAlgorithm {
 	private ArrayList<WeightChrom> calcFitness(ArrayList<WeightChrom> population, 
 			ArrayList<ArrayList<LinkedList<Word>>> wordpairs, ArrayList<Boolean> relevant){
 		int totalCorrect = 0;	//Stores the number of correct relevancy guesses for the entire population
-		
+
 		//Sets the fitness of each chromosome to # of correct relevancy guesses they make.
 		for(WeightChrom chrom : population){
 			int curPair = 0; //Stores the current pair num
 			for(ArrayList<LinkedList<Word>> pair : wordpairs){
-				
+
 				LinkedList<Word> word1 = pair.get(0);
 				LinkedList<Word> word2 = pair.get(1);
 				boolean isRelevant = relevant.get(curPair);
@@ -138,20 +206,20 @@ public class GeneticAlgorithm {
 			chrom.fitness = chrom.fitness / totalCorrect;
 			returnList.add(chrom);
 		}
-		
+
 		Collections.sort(returnList);
-		
+
 		//Roulette wheel: sets the fitness of each chrom to fit within a 0 to 1 range, according to their probabilities
 		float currentTotal = 0f;	//stores the total to add onto the next chromosome
-		
+
 		for(WeightChrom chrom : returnList){
 			chrom.fitness += currentTotal;
 			currentTotal = chrom.fitness;
 		}
-		
+
 		return returnList;
 	}
-	
+
 	/**
 	 * Loads test data into testWords and testRelevant
 	 * @param filename filename in the data directory. Use "" to use default data 
@@ -170,5 +238,3 @@ public class GeneticAlgorithm {
 		}
 	}
 }
-
-
