@@ -57,20 +57,27 @@ public class WordInfo {
 				String headword = "";
 				String partOfSpeech = "";
 				String exampleSentence = "";
-				
-				//checks if necessary information is included in dictionary entry
-				if(!result.containsValue(JsonObject.NULL)){
-					if(result.containsKey("part_of_speech") && result.getJsonArray("senses").getJsonObject(0).containsKey("definition")){
-						
-						//extracts information from JSON
-						headword = result.getJsonString("headword").toString();
-						headword = headword.substring(1,headword.length()-1);
 
-						partOfSpeech = result.getJsonString("part_of_speech").toString();
-						partOfSpeech = partOfSpeech.substring(1, partOfSpeech.length()-1);
-						
-						JsonObject senses = result.getJsonArray("senses").getJsonObject(0);
-						
+
+				//extracts headword
+				headword = result.getJsonString("headword").toString();
+				headword = headword.substring(1,headword.length()-1);
+
+				//extracts part of speech
+				if(result.containsKey("part_of_speech")){
+					partOfSpeech = result.getJsonString("part_of_speech").toString();
+					partOfSpeech = partOfSpeech.substring(1, partOfSpeech.length()-1);
+				}
+
+
+
+				//checks if result has "senses" entry, which contains definition and examples
+				if(!result.containsValue(JsonObject.NULL)){
+
+					JsonObject senses = result.getJsonArray("senses").getJsonObject(0);
+
+					//checks if result has definitions
+					if(senses.containsKey("definition")){
 						//getting all definitions
 						JsonArray defArr = senses.getJsonArray("definition");
 						for(JsonValue j : defArr){
@@ -78,7 +85,7 @@ public class WordInfo {
 							str = str.substring(1,str.length()-1);
 							definitions.add(str);
 						}
-						
+
 						//checks if entry has example sentences
 						if(senses.containsKey("examples")){
 							JsonObject examples = senses.getJsonArray("examples").getJsonObject(0);
@@ -88,10 +95,11 @@ public class WordInfo {
 								exampleSentence = exampleSentence.substring(1, exampleSentence.length()-1);
 							}
 						}
-						//adding new word with info gathered to return list
-						words.add(new Word(headword,partOfSpeech,definitions,exampleSentence));
 					}
 				}
+
+				//adding new word with info gathered to return list
+				words.add(new Word(headword,partOfSpeech,definitions,exampleSentence));
 			}
 		} catch(Exception e){
 			e.printStackTrace();
