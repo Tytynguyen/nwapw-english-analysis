@@ -1,9 +1,11 @@
 package langanal.word.base;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
-public class Word {
-
+public class Word implements Serializable{
+	private static final long serialVersionUID = 1L;
+	
 	private String value; //The word itself
 	private LinkedList<String> definitions;
 	private String POS; //Part of speech 'verb' , 'noun' , 'adjective', etc.

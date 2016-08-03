@@ -71,6 +71,53 @@ public class WordProcessing {
 		return relevancy;
 
 	}
+	
+	/**
+	 * Compares two words and calculates relevancy with defined weights
+	 * @param word1
+	 * @param word2
+	 * @param definitionWeight
+	 * @param partOfSpeechWeight
+	 * @param synonymWeight
+	 * @param antonymWeight
+	 * @return relevancy in %
+	 */
+	public static float compareWords(LinkedList<Word> word1, LinkedList<Word> word2, 
+			float definitionWeight, float partOfSpeechWeight, float synonymWeight, float antonymWeight){
+		float relevancy = 0;	//in %
+
+		if(word1.size() != 0 && word2.size() != 0){
+			for(Word curWord1 : word1){
+				for(Word curWord2 : word2){
+					float definitionValue = checkDefinition(curWord1, curWord2)*definitionWeight;
+					float POSValue = checkPOS(curWord1, curWord2)*POSWeight;
+					float synonymValue = checkSynonyms(curWord1,curWord2)*synonymWeight;
+					float antonymValue = checkAntonyms(curWord1,curWord2)*antonymWeight;
+
+					if(debugging){
+						System.out.println("Compare:");
+						System.out.println("\tdefinition: " + definitionValue);
+						System.out.println("\tPOS: " + POSValue);
+						System.out.println("\tsynonym: " + synonymValue);
+						System.out.println("\tantonym: " + antonymValue);
+					}
+
+					relevancy += (definitionValue + POSValue + synonymValue + antonymValue);
+
+				}
+			}
+			/*
+			 * Plots the rough weighted data from before on a sigmoid function.
+			 * This is used to transfer the earlier rough numbers into a percentage number
+			 */
+			relevancy = (float) (200*(1/(1+Math.pow(Math.E,-(relevancy/5)))-0.5));
+		
+		}else{
+			System.err.println("ERROR: One of the words was not found in the dictionary or thesaurus. Check your spelling.");
+		}
+		return relevancy;
+	}
+	
 	/**
 	 * Counts the repetition of words in each definition
 	 * 

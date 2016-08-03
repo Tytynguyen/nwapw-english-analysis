@@ -30,7 +30,7 @@ public class GeneticAlgorithm {
 	private ArrayList<ArrayList<LinkedList<Word>>> testWords;
 	private ArrayList<Boolean> testRelevant;
 
-	private String defaultTestData = "testwords.data";
+	private String defaultTestData = "testdata.data";
 
 	private ArrayList<WeightChrom> currentPopulation;
 	private ArrayList<WeightChrom> newPopulation;
@@ -185,6 +185,7 @@ public class GeneticAlgorithm {
 
 				LinkedList<Word> word1 = pair.get(0);
 				LinkedList<Word> word2 = pair.get(1);
+
 				boolean isRelevant = relevant.get(curPair);
 
 				float curChromRel = WordProcessing.compareWords(word1, word2, chrom.getDefWeight(), 
