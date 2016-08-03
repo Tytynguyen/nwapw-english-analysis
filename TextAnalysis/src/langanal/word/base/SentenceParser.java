@@ -67,7 +67,7 @@ public class SentenceParser {
 		StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
 
 		// read some text in the text variable
-		String text = "I walked my cat down the street while he chased a squirrel which ran very fast";
+		String text = "Is it raining?";
 
 		// create an empty Annotation just with the given text
 		Annotation document = new Annotation(text);
@@ -101,16 +101,19 @@ public class SentenceParser {
 			GrammaticalStructureFactory gsf = tlp.grammaticalStructureFactory();
 			GrammaticalStructure gs = gsf.newGrammaticalStructure(tree);
 			Collection<TypedDependency> td = gs.typedDependenciesCollapsed();
-			System.out.println(td);
+			System.out.println();
 
 			Object[] list = td.toArray();
 			System.out.println(list.length);
 			TypedDependency typedDependency;
 			for (Object object : list) {
 				typedDependency = (TypedDependency) object;
-				System.out.println("Dependency Name " + typedDependency.toString()+ " :: "+ "Node "+typedDependency.reln());
-				if (typedDependency.reln().getShortName().equals("something")) {
-					//your code
+				System.out.println("Dependency Name " + typedDependency.toString() + 
+						" :: " + "Node " + typedDependency.reln() +
+						" :: " + "Dep " + typedDependency.dep() +
+						" :: " + "Gov " + typedDependency.gov().pseudoPosition());
+
+				if (typedDependency.reln().getShortName().equals("")) {
 				}
 			}
 			// this is the Stanford dependency graph of the current sentence
