@@ -8,5 +8,8 @@ public class VerbPhrase {
 	IndexedWord verb;
 	LinkedList<IndexedWord> modifiers;
 	
-	
+	VerbPhrase(IndexedWord verb, LinkedList<IndexedWord> modifiers){
+		this.verb = verb;
+		this.modifiers = modifiers;
+	}
 }

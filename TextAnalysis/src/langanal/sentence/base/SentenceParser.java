@@ -68,7 +68,7 @@ public class SentenceParser {
 		StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
 
 		// read some text in the text variable
-		String text = "Jon fed and walked the hungry, energetic dog when he saw a squirrel on the hill";
+		String text = "Jon walked, slowly and carefully fed, and helped the hungry, energetic dog quickly when he saw a squirrel on the hill";
 		new Sentence(text);
 		// create an empty Annotation just with the given text
 		Annotation document = new Annotation(text);
