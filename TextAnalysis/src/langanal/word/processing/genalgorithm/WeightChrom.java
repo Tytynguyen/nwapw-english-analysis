@@ -2,7 +2,8 @@ package langanal.word.processing.genalgorithm;
 
 public class WeightChrom implements Comparable{
 	public int id;	//Population specific id
-	public float fitness; //fitness of chromosome
+	public double fitness; //fitness of chromosome
+	public double relFitness; //roulette
 
 	/**
 	 * Holds the chromosome's weights in an array
@@ -39,7 +40,9 @@ public class WeightChrom implements Comparable{
 
 	@Override
 	public String toString(){
-		return "{Chromosome: " + this.id + " | Fitness: [" + this.fitness + 
+		return "{Chromosome: [" + this.id + 
+				"] | Fitness: [" + this.fitness + 
+				"] | relFitness: [" + this.relFitness +
 				"] | Def: [" + this.weights[0] + 
 				"] | POS: [" + this.weights[1] + 
 				"] | Syn: [" + this.weights[2] +

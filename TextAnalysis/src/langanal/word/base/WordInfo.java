@@ -26,7 +26,7 @@ public class WordInfo {
 				theWords.add(w);
 			}
 		}
-		addThesaurusInfo(theWords);
+		addThesaurusInfo(theWords,word);
 
 		return words;
 	}
@@ -109,12 +109,12 @@ public class WordInfo {
 	}
 
 	//adds synonyms and antonyms for all words inputted
-	private static void addThesaurusInfo(LinkedList<Word> words){
+	private static void addThesaurusInfo(LinkedList<Word> words, String qWord){
 
 		//Receiving info from server
 		URL url = null;
 		try {
-			url = new URL("http://thesaurus.altervista.org/thesaurus/v1?output=json&language=en_US&key="+thesaurusApiKey+"&word="+words.getFirst().getValue());
+			url = new URL("http://thesaurus.altervista.org/thesaurus/v1?output=json&language=en_US&key="+thesaurusApiKey+"&word="+qWord);
 		} catch (MalformedURLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

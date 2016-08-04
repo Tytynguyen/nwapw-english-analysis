@@ -29,8 +29,8 @@ pyramid temple 1
 hood jacket 1
 minimal apple 0
 hour eternity 1
-grand escapist 0
-nasty lasagna 0
+grand person 0
+nasty mean 0
 confident apple 0
 arrow bullet 1
 option choice 1
@@ -42,7 +42,7 @@ cool cold 1
 heavy large 0
 agent secret 1
 antique old 1
-unliving dead 1
+corpse dead 1
 determined undermined 0
 shark dark 0
 ocean land 1
@@ -57,7 +57,7 @@ condo live 1
 awakening dormant 1
 elegant throttle 0
 carcinogenic grass 0
-annoying dissillusioned 0
+annoying cool 0
 freezing solid 1
 diminished call 0
 hero good 1
@@ -75,7 +75,7 @@ alarm arm 0
 alarm emergency 1
 messiah hero 1
 coal heat 1
-parasitic theivery 1
+parasitic thief 1
 doubtless confident 1
 fashionable building 0
 water life 0
@@ -141,8 +141,8 @@ flew worry 0
 collect carry 0
 tore rip 1
 squash fruit 1
-neighbor friend 0
-neigbor close 1
+tree friend 0
+near close 1
 crazy action 0
 crazy mad 1
 supervising overlooking 1
@@ -158,7 +158,7 @@ bright dark 1
 film puppies 0
 clown fair 1
 umbrella rain 1
-planet ceral 0
+planet stone 0
 dump sight 0
 alien cow 0
 party balloon 1
@@ -196,7 +196,7 @@ only spice 0
 never land 0
 hoe garden 1
 shovel grave 0
-respect disrepect 1
+moon earth 1
 cyborg robot 1
 cybernetic under 0
 lord castle 1
@@ -239,7 +239,7 @@ ordinary green 0
 loaf bread 1
 meat cow 1
 cow tower 0
-racism zenophobia 1
+female male 1
 fantasy dream 1
 hero pork 0
 state matter 1

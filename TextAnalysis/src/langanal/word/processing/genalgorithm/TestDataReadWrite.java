@@ -131,9 +131,19 @@ public class TestDataReadWrite {
 				splitLine = line.split(" ");
 				returnWords.add(new ArrayList<LinkedList<Word>>());
 
-				returnWords.get(linenum).add(WordInfo.getDictionaryWords(splitLine[0]));
-				returnWords.get(linenum).add(WordInfo.getDictionaryWords(splitLine[1]));
-				
+				LinkedList<Word> word1 = WordInfo.getFullInfoWords(splitLine[0]);
+				LinkedList<Word> word2 = WordInfo.getFullInfoWords(splitLine[1]);
+				if(word1.size() == 0 ){
+					System.err.println("ERROR ON READ/WRITE: Word \"" + splitLine[0] + "\" was not found in the dictionary or thesaurus. Check your spelling.");
+				}
+				if(word2.size() == 0 ){
+					System.err.println("ERROR ON READ/WRITE: Word \"" + splitLine[1] + "\" was not found in the dictionary or thesaurus. Check your spelling.");
+				}
+				System.out.println(splitLine[0]);
+				returnWords.get(linenum).add(WordInfo.getFullInfoWords(splitLine[0]));
+				System.out.println(splitLine[1]);
+				returnWords.get(linenum).add(WordInfo.getFullInfoWords(splitLine[1]));
+
 				if(splitLine[2].toString().equals("1")){
 					returnRelevant.add(true);
 				}else if(splitLine[2].toString().equals("0")){
@@ -141,15 +151,15 @@ public class TestDataReadWrite {
 				}else{
 					System.err.println("There is no boolean at line: " + linenum);
 				}
-				
+				System.out.print(linenum + " ");
 				linenum++;
 			}
 			in.close();
-			
+
 			//Write
 			writeTestWordFile(returnWords, returnRelevant, writename);
 			return returnWords;
-			
+
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
