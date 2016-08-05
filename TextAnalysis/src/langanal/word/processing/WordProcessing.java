@@ -8,17 +8,18 @@ import langanal.word.base.WordInfo;
 
 public class WordProcessing {
 	//Weights
-	public static float definitionWeight = .5f;
-	public static float POSWeight = 0.2f;
-	public static float synonymWeight = 1;
-	public static float antonymWeight = 1;
+	public static float definitionWeight = 1f;
+	public static float POSWeight = 0.1f;
+	public static float synonymWeight = 2;
+	public static float antonymWeight = 2;
+	public static float exampleWeight = 3;
 
-	public static boolean debugging = false;
+	public static boolean debugging = true;
 
-	private static String[] commonWords = 
-			new String[]{
-					"the", "be", "to", "of", "and", "a", "in","that", "have", "i","it","for","not","not","on","with",
-					"or", "is"
+	//Stores the common "trash" words that shouldn't be used to find similarities
+	private static String[] commonWords = new String[]{
+			"the","be","to","of","and","a","in","that","have","i","it","for","not","not","on","with",
+			"or","is", "was", "were", "being", "been", "they", "are", "when", "if", "which", "something", "from", "you"
 	};
 
 	/**
@@ -31,21 +32,30 @@ public class WordProcessing {
 	public static float compareWords(String word1, String word2){
 		float relevancy = 0;	//in %
 
+
+			float definitiontValue = 0;
+			float POStValue = 0;
+			float synonymtValue = 0;
+			float antonymtValue = 0;
+			float exampletValue = 0;
+		
+		
 		//Stores the words with the same spelling into one LinkedList
 		LinkedList<Word> allWord1 = new LinkedList<Word>();
 		LinkedList<Word> allWord2 = new LinkedList<Word>();
-	
-			allWord1 = WordInfo.getFullInfoWords(word1);
-			allWord2 = WordInfo.getFullInfoWords(word2);
 
+		allWord1 = WordInfo.getFullInfoWords(word1);
+		allWord2 = WordInfo.getFullInfoWords(word2);
 
+		//Makes sure that the word exists
 		if(allWord1.size() != 0 && allWord2.size() != 0){
 			for(Word curWord1 : allWord1){
 				for(Word curWord2 : allWord2){
-					float definitionValue = checkDefinition(curWord1, curWord2)*definitionWeight;
-					float POSValue = checkPOS(curWord1, curWord2)*POSWeight;
-					float synonymValue = checkSynonyms(curWord1,curWord2)*synonymWeight;
-					float antonymValue = checkAntonyms(curWord1,curWord2)*antonymWeight;
+					float definitionValue = checkDefinitionSimilarities(curWord1, curWord2)*definitionWeight;
+					float POSValue = checkPOSSimilarities(curWord1, curWord2)*POSWeight;
+					float synonymValue = checkSynonymSimilarities(curWord1,curWord2)*synonymWeight;
+					float antonymValue = checkAntonymSimilarities(curWord1,curWord2)*antonymWeight;
+					float exampleValue = checkExampleSimilarities(curWord1, curWord2)*exampleWeight;
 
 					if(debugging){
 						System.out.println("Compare:");
@@ -53,20 +63,42 @@ public class WordProcessing {
 						System.out.println("\tPOS: " + POSValue);
 						System.out.println("\tsynonym: " + synonymValue);
 						System.out.println("\tantonym: " + antonymValue);
+						System.out.println("\texample: " + exampleValue);
+						
+						definitiontValue += definitionValue;
+						POStValue += POSValue;
+						synonymtValue += synonymValue;
+						antonymtValue += antonymValue;
+						exampletValue += exampleValue;
+
 					}
 
-					relevancy += (definitionValue + POSValue + synonymValue + antonymValue);
+					relevancy += (definitionValue + POSValue + synonymValue + antonymValue)/5;
 
 				}
+			}
+			if(debugging){
+				System.out.println();
+				System.out.println("\tdefT: " + definitiontValue);
+				System.out.println("\tpost: " + POStValue);
+				System.out.println("\tsynT: " + antonymtValue);
+				System.out.println("\tantT: " + synonymtValue);
+				System.out.println("\texaT: " + exampletValue);
+
+				System.out.println("\tTotal rel: " + relevancy);
 			}
 			/*
 			 * Plots the rough weighted data from before on a sigmoid function.
 			 * This is used to transfer the earlier rough numbers into a percentage number
 			 */
 			relevancy = (float) (200*(1/(1+Math.pow(Math.E,-(relevancy/5)))-0.5));
-		
 		}else{
-			System.err.println("ERROR: One of the words was not found in the dictionary or thesaurus. Check your spelling.");
+			if(allWord1.size() == 0){
+				System.err.println("ERROR: Word \"" + word1 + "\" was not found in the dictionary or thesaurus. Check your spelling.");
+			}
+			if(allWord2.size() == 0){
+				System.err.println("ERROR: Word \"" + word2 + "\" was not found in the dictionary or thesaurus. Check your spelling.");
+			}
 		}
 		return relevancy;
 
@@ -78,7 +110,7 @@ public class WordProcessing {
 	 * @param word2
 	 * @return The number of repetitions
 	 */
-	public static int checkDefinition(Word word1, Word word2){
+	public static int checkDefinitionSimilarities(Word word1, Word word2){
 		ArrayList<String> definitionWords1 = new ArrayList<String>();
 		ArrayList<String> definitionWords2 = new ArrayList<String>();
 
@@ -101,15 +133,12 @@ public class WordProcessing {
 			}
 		}
 
-		//Clears common words
-		for(int i = 0;i<definitionWords1.size();i++){
-
-		}
 		//Checks for repetitions
 		for(String persistWord : definitionWords1){
 			for(String checkingWord : definitionWords2){
 				if(persistWord.equals(checkingWord)){
 					if(!isCommonWord(persistWord)){
+						System.out.println("\t\t def: " + persistWord);
 						definitionRepeats++;
 					}
 				}
@@ -147,7 +176,6 @@ public class WordProcessing {
 				isIn = true;
 			}
 		}
-
 		return isIn;
 	}
 
@@ -158,7 +186,7 @@ public class WordProcessing {
 	 * @param word2
 	 * @return 1 if they share the same POS, 0 if they do not share the same POS
 	 */
-	public static int checkPOS(Word word1, Word word2){
+	public static int checkPOSSimilarities(Word word1, Word word2){
 		if(word1.getPOS().equals(word2.getPOS())){
 			return 1;
 		}else{
@@ -172,7 +200,7 @@ public class WordProcessing {
 	 * @param word2
 	 * @return The # of shared synonyms
 	 */
-	public static int checkSynonyms(Word word1, Word word2){
+	public static int checkSynonymSimilarities(Word word1, Word word2){
 		ArrayList<String> synonymsWord1 = new ArrayList<String>(word1.getSynonyms().size());
 		ArrayList<String> synonymsWord2 = new ArrayList<String>(word2.getSynonyms().size());
 
@@ -201,7 +229,7 @@ public class WordProcessing {
 	 * @param word2
 	 * @return The # of shared antonyms
 	 */
-	public static int checkAntonyms(Word word1, Word word2){
+	public static int checkAntonymSimilarities(Word word1, Word word2){
 		ArrayList<String> antonymsWord1 = new ArrayList<String>(word1.getAntonyms().size());
 		ArrayList<String> antonymsWord2 = new ArrayList<String>(word2.getAntonyms().size());
 
@@ -224,7 +252,7 @@ public class WordProcessing {
 
 		return repeatedAntonyms;
 	}
-	
+
 	/**
 	 * Splits the words in input linkedlist by spaces, meaning that 
 	 * each item in the returned linkedlist is one word.
@@ -239,6 +267,50 @@ public class WordProcessing {
 				returnList.add(x);
 			}
 		}
+		return returnList;
+	}
+
+	/**
+	 * Finds the number of shared words in their examples
+	 * @param word1
+	 * @param word2
+	 * @return number of similarities
+	 */
+	private static int checkExampleSimilarities(Word word1, Word word2){
+		ArrayList<String> word1Ex = splitExampleWords(word1.getExample());
+		ArrayList<String> word2Ex = splitExampleWords(word2.getExample());
+
+		int count = 0;
+		if(word1Ex.size()!= 0 && word2Ex.size()!= 0){
+			for(String cur1 : word1Ex){
+				for(String cur2 : word2Ex){
+					if(cur1.equals(cur2)){
+						if(!isCommonWord(cur1)){
+							count++;
+						}
+
+					}
+				}
+			}
+		}
+		return count;
+	}
+
+	/**
+	 * Splits the example up by spaces and cleans the input
+	 * @param example
+	 * @return ArrayList of words in the example sentence.
+	 */
+	private static ArrayList<String> splitExampleWords(String example){
+		ArrayList<String> returnList = new ArrayList<String>();
+
+		for(String s : example.replaceAll("[^a-zA-Z ]", "").toLowerCase().trim().split(" ")){
+			String add = s.trim().replaceAll(" ", "");
+			if(add.length() != 0){
+				returnList.add(add);
+			}
+		}
+		System.out.println(returnList);
 		return returnList;
 	}
 }
