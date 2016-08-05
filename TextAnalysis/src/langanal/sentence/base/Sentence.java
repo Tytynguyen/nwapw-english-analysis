@@ -1,34 +1,25 @@
 package langanal.sentence.base;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import edu.stanford.nlp.*;
-import edu.stanford.nlp.dcoref.CorefCoreAnnotations.CorefChainAnnotation;
-import edu.stanford.nlp.hcoref.data.CorefChain;
-import edu.stanford.nlp.ling.CoreAnnotations.*;
+import edu.stanford.nlp.ling.CoreAnnotations.PartOfSpeechAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations.TextAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
 import edu.stanford.nlp.ling.CoreLabel;
-import edu.stanford.nlp.ling.IndexedWord;
-import edu.stanford.nlp.pipeline.*;
-import edu.stanford.nlp.semgraph.SemanticGraph;
-import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations.CollapsedCCProcessedDependenciesAnnotation;
-import edu.stanford.nlp.trees.GrammaticalStructure;
-import edu.stanford.nlp.trees.GrammaticalStructureFactory;
-import edu.stanford.nlp.trees.PennTreebankLanguagePack;
-import edu.stanford.nlp.trees.Tree;
-import edu.stanford.nlp.trees.TreeCoreAnnotations.TreeAnnotation;
-import edu.stanford.nlp.trees.TreebankLanguagePack;
-import edu.stanford.nlp.trees.TypedDependency;
-import edu.stanford.nlp.util.*;
+import edu.stanford.nlp.util.CoreMap;
 import langanal.word.base.Word;
 import langanal.word.base.WordInfo;
 
+import java.util.LinkedList;
+import java.util.List;
+
 
 public class Sentence {
-	LinkedList<Clause> clauses = new LinkedList<>();
-	LinkedList<LinkedList<Word>> words = new LinkedList<>();
+	LinkedList<NounPhrase> nouns = new LinkedList<NounPhrase>();
+	LinkedList<VerbPhrase> verbs = new LinkedList<VerbPhrase>();
+	LinkedList<LinkedList<Word>> words = new LinkedList<>();//why is this data type?
+
+	public LinkedList<NounPhrase> getNouns(){return nouns;};
+	public LinkedList<VerbPhrase> getVerbs(){return verbs;};
+	public LinkedList<LinkedList<Word>> getWords(){return words;}
 
 	Sentence(String str){
 		CoreMap cm = SentenceParser.getCoreMap(str);
