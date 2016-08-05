@@ -51,7 +51,7 @@ public class OWLProxy {
     private List<OWLClass> walkOntology(final String toFind) {
 
 		//create a LinkedList of OWLClasses that will be returned
-		LinkedList<OWLClassExpression> heirarchy = new LinkedList<OWLClassExpression>();
+		LinkedList<OWLClassExpression> hierarchy = new LinkedList<OWLClassExpression>();
 
 		//for every class in the ontology
 		for (OWLClass currentClass:ontology.getClassesInSignature()) {
@@ -84,19 +84,19 @@ public class OWLProxy {
 	 */
 	private LinkedList<OWLClass> stepUp(OWLClass lastClass) {
 
-		LinkedList<OWLClass> heirarchy = new LinkedList<OWLClass>();
+		LinkedList<OWLClass> hierarchy = new LinkedList<OWLClass>();
 
-		heirarchy.add(lastClass);
+		hierarchy.add(lastClass);
 
 		//kludgy way of getting the first element
 		boolean hasRun = false;
 		for (OWLSubClassOfAxiom currentAxiom:ontology.getSubClassAxiomsForSubClass(lastClass.asOWLClass())) {
 			if (!hasRun) {
 				hasRun = true;
-				heirarchy.addAll(stepUp(currentAxiom.getSuperClass().asOWLClass()));
+				hierarchy.addAll(stepUp(currentAxiom.getSuperClass().asOWLClass()));
 			}
 		}
-		return heirarchy;
+		return hierarchy;
 	}
 
     /**
@@ -108,12 +108,12 @@ public class OWLProxy {
     public int degreesOfSeparation(String firstWord, String secondWord) {
 
 
-    	//gets the heirarchy
-		List<OWLClass> firstHeirarchy = walkOntology(firstWord);
-		List<OWLClass> secondHeirarchy = walkOntology(secondWord);
+    	//gets the hierarchy
+		List<OWLClass> firstHierarchy = walkOntology(firstWord);
+		List<OWLClass> secondHierarchy = walkOntology(secondWord);
 
 		//if either is empty (no word found), return -1
-		if (firstHeirarchy == null | secondHeirarchy == null) {
+		if (firstHierarchy == null | secondHierarchy == null) {
 			return -1;
 		}
 
@@ -123,13 +123,13 @@ public class OWLProxy {
 
 		//find the closest commonality
 		//assumes iterator works front to back
-		for (OWLClass firstCurrent:firstHeirarchy) {
-			for (OWLClass secondCurrent:secondHeirarchy) {
+		for (OWLClass firstCurrent:firstHierarchy) {
+			for (OWLClass secondCurrent:secondHierarchy) {
 				//if they have a commonality
 				if (firstCurrent.equals(secondCurrent)) {
 					//number of elements left
-					int firstLeft = firstHeirarchy.indexOf(firstCurrent);
-					int secondLeft = firstHeirarchy.indexOf(secondCurrent);
+					int firstLeft = firstHierarchy.indexOf(firstCurrent);
+					int secondLeft = firstHierarchy.indexOf(secondCurrent);
 					//return the total
 					return firstLeft+secondLeft;
 				}
