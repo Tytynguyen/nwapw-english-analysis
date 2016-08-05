@@ -77,7 +77,6 @@ public class Sentence {
 					if(indexedWord.pseudoPosition() == dependency.gov().pseudoPosition()){
 						if(dependency.reln().toString().contains("mod")){
 							verbs.getLast().addMod(dependency.dep());
-							System.out.println(dependency);
 							toCheck.add(dependency);
 						}
 					} 
@@ -88,10 +87,8 @@ public class Sentence {
 						
 						for(TypedDependency dependency : dependencies){
 							if(check.dep().pseudoPosition() == dependency.gov().pseudoPosition()){
-								if(dependency.reln().toString().startsWith("conj")){
+								if(dependency.reln().toString().startsWith("conj") || dependency.reln().toString().contains("mod")){
 									verbs.getLast().addMod(dependency.dep());
-									System.out.println(dependency);
-									System.out.println(check);
 									addList.add(dependency);
 								}
 							}
@@ -107,7 +104,6 @@ public class Sentence {
 					if(indexedWord.pseudoPosition() == dependency.gov().pseudoPosition()){
 						if(dependency.reln().toString().contains("mod")){
 							nouns.getLast().addMod(dependency.dep());
-							System.out.println(dependency);
 							toCheck.add(dependency);
 						}
 					} 
@@ -117,10 +113,8 @@ public class Sentence {
 					for(TypedDependency check : toCheck){
 						for(TypedDependency dependency : dependencies){
 							if(check.dep().pseudoPosition() == dependency.gov().pseudoPosition()){
-								if(dependency.reln().toString().startsWith("conj")){
+								if(dependency.reln().toString().startsWith("conj") || dependency.reln().toString().contains("mod")){
 									nouns.getLast().addMod(dependency.dep());
-									System.out.println(check);
-									System.out.println(dependency);
 									addList.add(dependency);
 								}
 							}

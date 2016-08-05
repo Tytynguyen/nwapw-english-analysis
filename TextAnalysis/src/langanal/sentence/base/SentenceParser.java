@@ -62,7 +62,7 @@ public class SentenceParser {
 	WRB Wh­adverb*/
 
 	public static void main(String[] args) {
-		String text = "Jon walked, slowly and carefully fed, and helped the hungry and energetic dog, when he saw a squirrel on the hill.";
+		String text = "In after-years he liked to think that he had been in Very Great Danger during the Terrible Flood, but the only danger he had really been in was the last half-hour of his imprisonment, when Owl, who had just flown up, sat on a branch of his tree to comfort him, and told him a very long story about an aunt who had once laid a seagull's egg by mistake, and the story went on and on, rather like this sentence, until Piglet who was listening out of his window without much hope, went to sleep quietly and naturally, slipping slowly out of the window towards the water until he was only hanging on by his toes, at which moment, luckily, a sudden loud squawk from Owl, which was really part of the story, being what his aunt said, woke the Piglet up and just gave him time to jerk himself back into safety.";
 		Sentence s = new Sentence(text);
 		System.out.println("done");
 		for(NounPhrase n : s.nouns){
@@ -102,6 +102,7 @@ public class SentenceParser {
 		int index = 0;
 		for(Object o : temp){
 			dependencies[index] = (TypedDependency) o;
+			System.out.println(dependencies[index]);
 			index++;
 		}
 		return dependencies;
