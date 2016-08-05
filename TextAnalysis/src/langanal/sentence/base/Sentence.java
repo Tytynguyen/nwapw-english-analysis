@@ -65,47 +65,69 @@ public class Sentence {
 				}
 			}
 		}
-		for(LinkedList<Word> l: words){
-			for(Word w: l){
-				System.out.println(w.getValue()+ " " + words.indexOf(l));
-			}
-		}
 
-		// get parse tree of sentence
-		Tree tree = cm.get(TreeAnnotation.class);
-		// Get dependency tree
-		TreebankLanguagePack tlp = new PennTreebankLanguagePack();
-		GrammaticalStructureFactory gsf = tlp.grammaticalStructureFactory();
-		GrammaticalStructure gs = gsf.newGrammaticalStructure(tree);
-		Collection<TypedDependency> td = gs.typedDependenciesCollapsed();
-		Object[] temp = td.toArray();
-		TypedDependency[]  dependencies = new TypedDependency[temp.length];
-		int index = 0;
-		for(Object o : temp){
-			dependencies[index] = (TypedDependency) o;
-			System.out.println(dependencies[index]);
-			index++;
-		}
-		
+		TypedDependency[] dependencies = SentenceParser.getDependencies(cm);
+
 		for(CoreLabel cl : tokens){
 			IndexedWord indexedWord = new IndexedWord(cl);
 			if(nlpPOStoPOS(indexedWord.get(PartOfSpeechAnnotation.class)).equals("verb")) {
 				verbs.add(new VerbPhrase(indexedWord,new LinkedList<>()));
+				LinkedList<TypedDependency> toCheck = new LinkedList<>();
 				for(TypedDependency dependency : dependencies){
 					if(indexedWord.pseudoPosition() == dependency.gov().pseudoPosition()){
+						if(dependency.reln().toString().contains("mod")){
+							verbs.getLast().addMod(dependency.dep());
+							System.out.println(dependency);
+							toCheck.add(dependency);
+						}
+					} 
+				}
+				while(!toCheck.isEmpty()){
+					LinkedList<TypedDependency> addList = new LinkedList<>();
+					for(TypedDependency check : toCheck){
 						
-					} else if(indexedWord.pseudoPosition() == dependency.dep().pseudoPosition()){
-						
+						for(TypedDependency dependency : dependencies){
+							if(check.dep().pseudoPosition() == dependency.gov().pseudoPosition()){
+								if(dependency.reln().toString().startsWith("conj")){
+									verbs.getLast().addMod(dependency.dep());
+									System.out.println(dependency);
+									System.out.println(check);
+									addList.add(dependency);
+								}
+							}
+						}
 					}
+					toCheck.clear();
+					toCheck.addAll(addList);
 				}
 			} else if(nlpPOStoPOS(indexedWord.get(PartOfSpeechAnnotation.class)).equals("noun")){
+				nouns.add(new NounPhrase(indexedWord,new LinkedList<>()));
+				LinkedList<TypedDependency> toCheck = new LinkedList<>();
 				for(TypedDependency dependency : dependencies){
-					nouns.add(new NounPhrase(indexedWord,new LinkedList<>()));
 					if(indexedWord.pseudoPosition() == dependency.gov().pseudoPosition()){
-						
-					} else if(indexedWord.pseudoPosition() == dependency.dep().pseudoPosition()){
-						
+						if(dependency.reln().toString().contains("mod")){
+							nouns.getLast().addMod(dependency.dep());
+							System.out.println(dependency);
+							toCheck.add(dependency);
+						}
+					} 
+				}
+				while(!toCheck.isEmpty()){
+					LinkedList<TypedDependency> addList = new LinkedList<>();
+					for(TypedDependency check : toCheck){
+						for(TypedDependency dependency : dependencies){
+							if(check.dep().pseudoPosition() == dependency.gov().pseudoPosition()){
+								if(dependency.reln().toString().startsWith("conj")){
+									nouns.getLast().addMod(dependency.dep());
+									System.out.println(check);
+									System.out.println(dependency);
+									addList.add(dependency);
+								}
+							}
+						}
 					}
+					toCheck.clear();
+					toCheck.addAll(addList);
 				}
 			}
 		}

@@ -13,4 +13,20 @@ public class NounPhrase {
 		this.modifiers = modifiers;
 	}
 	
+	public boolean addMod(IndexedWord modifier){
+		if(!modifiers.contains(modifier)){
+			modifiers.add(modifier);
+			return true;
+		}
+		return false;
+	}
+	
+	public String toString(){
+		String returnString = "Noun: " + noun;
+		for(IndexedWord iw : modifiers){
+			returnString += '\n' + "    " + iw.toString();
+		}
+		returnString += '\n';
+		return returnString;
+	}
 }
