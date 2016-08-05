@@ -38,6 +38,7 @@ public class Sentence {
 	Sentence(String str){
 		//gets nlp CoreMap of sentence, includes all nlp info
 		CoreMap cm = SentenceParser.getCoreMap(str);
+		//seperate tagged words
 		List<CoreLabel> tokens = cm.get(TokensAnnotation.class);
 
 		//loops through all CoreLabels (nlp tagged words)
@@ -66,14 +67,21 @@ public class Sentence {
 			}
 		}
 
+		//get sentence dependencies for grammatical relations
 		TypedDependency[] dependencies = SentenceParser.getDependencies(cm);
 
+		//loop through all words
 		for(CoreLabel cl : tokens){
 			IndexedWord indexedWord = new IndexedWord(cl);
-			if(nlpPOStoPOS(indexedWord.get(PartOfSpeechAnnotation.class)).equals("verb")) {
+			
+			//find verbs
+			if(nlpPOStoPOS(indexedWord.get(PartOfSpeechAnnotation.class)).equals("verb")){
+				//add to verb list
 				verbs.add(new VerbPhrase(indexedWord,new LinkedList<>()));
 				LinkedList<TypedDependency> toCheck = new LinkedList<>();
+				
 				for(TypedDependency dependency : dependencies){
+					//if word is same as word with dependency and dependency is a modifier, adds dependency word to modifiers
 					if(indexedWord.pseudoPosition() == dependency.gov().pseudoPosition()){
 						if(dependency.reln().toString().contains("mod")){
 							verbs.getLast().addMod(dependency.dep());
@@ -81,11 +89,12 @@ public class Sentence {
 						}
 					} 
 				}
+				//checks all modifiers for modifiers
 				while(!toCheck.isEmpty()){
 					LinkedList<TypedDependency> addList = new LinkedList<>();
 					for(TypedDependency check : toCheck){
-						
 						for(TypedDependency dependency : dependencies){
+							//if finds modifiers of modifiers adds to word's modifiers and adds to check list for it to be checked
 							if(check.dep().pseudoPosition() == dependency.gov().pseudoPosition()){
 								if(dependency.reln().toString().startsWith("conj") || dependency.reln().toString().contains("mod")){
 									verbs.getLast().addMod(dependency.dep());
@@ -98,9 +107,12 @@ public class Sentence {
 					toCheck.addAll(addList);
 				}
 			} else if(nlpPOStoPOS(indexedWord.get(PartOfSpeechAnnotation.class)).equals("noun")){
+				//add to noun list
 				nouns.add(new NounPhrase(indexedWord,new LinkedList<>()));
 				LinkedList<TypedDependency> toCheck = new LinkedList<>();
+				
 				for(TypedDependency dependency : dependencies){
+					//if word is same as word with dependency and dependency is a modifier, adds dependency word to modifiers
 					if(indexedWord.pseudoPosition() == dependency.gov().pseudoPosition()){
 						if(dependency.reln().toString().contains("mod")){
 							nouns.getLast().addMod(dependency.dep());
@@ -108,10 +120,12 @@ public class Sentence {
 						}
 					} 
 				}
+				//checks all modifiers for modifiers
 				while(!toCheck.isEmpty()){
 					LinkedList<TypedDependency> addList = new LinkedList<>();
 					for(TypedDependency check : toCheck){
 						for(TypedDependency dependency : dependencies){
+							//if finds modifiers of modifiers adds to word's modifiers and adds to check list for it to be checked
 							if(check.dep().pseudoPosition() == dependency.gov().pseudoPosition()){
 								if(dependency.reln().toString().startsWith("conj") || dependency.reln().toString().contains("mod")){
 									nouns.getLast().addMod(dependency.dep());
@@ -127,6 +141,11 @@ public class Sentence {
 		}
 	}
 
+	/*
+	 * Translates nlpPOS tag to POS tag that can be used in dictionary api
+	 * @param nlpPOS tag to translate
+	 * @param Translated POS tag
+	 */
 	private static String nlpPOStoPOS(String nlpPOS){
 		//delete extra modifier of pos tag
 		if(nlpPOS.length()>=2){

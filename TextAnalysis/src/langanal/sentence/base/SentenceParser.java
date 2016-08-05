@@ -24,7 +24,9 @@ import edu.stanford.nlp.util.*;
 
 public class SentenceParser {
 
-	/*CC Coordinating conjunction
+	/* Parts of speech tags from coreNLP
+	 * 
+	 * CC Coordinating conjunction
 	CD Cardinal number
 	DT Determiner
 	EX Existential there
@@ -73,6 +75,11 @@ public class SentenceParser {
 		}
 	}
 
+	/*
+	 * Takes a sentence, uses coreNLP's tagging functionality to tag sentence and find dependencies
+	 * @param sentence to be tagged
+	 * @return tagged sentence (CoreMap)
+	 */
 	public static CoreMap getCoreMap(String sentence){
 		// creates a StanfordCoreNLP object, with POS tagging, lemmatization, NER, parsing, and coreference  
 		Properties props = new Properties();
@@ -89,6 +96,11 @@ public class SentenceParser {
 		return document.get(SentencesAnnotation.class).get(0);
 	}
 
+	/*
+	 * Gets dependency array from CoreMap
+	 * @param CoreMap to get dependency array from
+	 * @return Dependency array from CoreMap
+	 */
 	public static TypedDependency[] getDependencies(CoreMap cm){
 		// get parse tree of sentence
 		Tree tree = cm.get(TreeAnnotation.class);
@@ -96,7 +108,11 @@ public class SentenceParser {
 		TreebankLanguagePack tlp = new PennTreebankLanguagePack();
 		GrammaticalStructureFactory gsf = tlp.grammaticalStructureFactory();
 		GrammaticalStructure gs = gsf.newGrammaticalStructure(tree);
+		
+		//get collection of all dependencies
 		Collection<TypedDependency> td = gs.typedDependenciesCollapsed();
+		
+		//change to array
 		Object[] temp = td.toArray();
 		TypedDependency[]  dependencies = new TypedDependency[temp.length];
 		int index = 0;
