@@ -1,11 +1,14 @@
 package langanal.UserInterface;
 
-import langanal.word.processing.WordProcessing;
+import langanal.sentence.base.Sentence;
+import langanal.sentence.processing.SentenceProcessing;
 
 import javax.swing.*;
-import javax.swing.border.*;
+import javax.swing.border.Border;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 
 /**
  * Created by SteinJac.ao on 8/1/2016.
@@ -109,7 +112,7 @@ public class GUI extends JPanel implements ActionListener {
         if(!inTA1.getText().equals("") && !inTA2.getText().equals("")){
             text1 = inTA1.getText();
             text2 = inTA2.getText();
-            this.relevancy = WordProcessing.compareWords(text1, text2);
+            this.relevancy = SentenceProcessing.calcRelevancy(new Sentence(text1),new Sentence(text2));
             feedback.setText(TextOut(relevancy));
         }
     }

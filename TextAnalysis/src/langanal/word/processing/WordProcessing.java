@@ -1,10 +1,9 @@
 package langanal.word.processing;
 
+import langanal.word.base.Word;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
-
-import langanal.word.base.Word;
-import langanal.word.base.WordInfo;
 
 public class WordProcessing {
 	//Weights
@@ -12,8 +11,6 @@ public class WordProcessing {
 	public static float POSWeight = 0.2f;
 	public static float synonymWeight = 1;
 	public static float antonymWeight = 1;
-
-	public static boolean debugging = false;
 
 	private static String[] commonWords = 
 			new String[]{
@@ -24,20 +21,12 @@ public class WordProcessing {
 	/**
 	 * Compares, processes, and returns the relevancy of the two words
 	 * 
-	 * @param word1
-	 * @param word2
+	 * @param allWord1
+	 * @param allWord2
 	 * @return The % relevancy
 	 */
-	public static float compareWords(String word1, String word2){
+	public static float compareWords(LinkedList<Word> allWord1, LinkedList<Word> allWord2){
 		float relevancy = 0;	//in %
-
-		//Stores the words with the same spelling into one LinkedList
-		LinkedList<Word> allWord1 = new LinkedList<Word>();
-		LinkedList<Word> allWord2 = new LinkedList<Word>();
-	
-			allWord1 = WordInfo.getFullInfoWords(word1);
-			allWord2 = WordInfo.getFullInfoWords(word2);
-
 
 		if(allWord1.size() != 0 && allWord2.size() != 0){
 			for(Word curWord1 : allWord1){
@@ -47,16 +36,7 @@ public class WordProcessing {
 					float synonymValue = checkSynonyms(curWord1,curWord2)*synonymWeight;
 					float antonymValue = checkAntonyms(curWord1,curWord2)*antonymWeight;
 
-					if(debugging){
-						System.out.println("Compare:");
-						System.out.println("\tdefinition: " + definitionValue);
-						System.out.println("\tPOS: " + POSValue);
-						System.out.println("\tsynonym: " + synonymValue);
-						System.out.println("\tantonym: " + antonymValue);
-					}
-
 					relevancy += (definitionValue + POSValue + synonymValue + antonymValue);
-
 				}
 			}
 			/*

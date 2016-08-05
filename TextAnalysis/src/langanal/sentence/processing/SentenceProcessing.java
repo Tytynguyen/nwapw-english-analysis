@@ -1,8 +1,6 @@
 package langanal.sentence.processing;
 
-import langanal.sentence.base.NounPhrase;
 import langanal.sentence.base.Sentence;
-import langanal.sentence.base.VerbPhrase;
 import langanal.word.base.Word;
 import langanal.word.processing.WordProcessing;
 
@@ -10,22 +8,21 @@ import java.util.LinkedList;
 
 import static langanal.sentence.processing.NounPhraseProcessing.ModToWord;
 import static langanal.sentence.processing.NounPhraseProcessing.NPhToWord;
-import static langanal.sentence.processing.VerbPhraseProcessing.VPhToWord;
 import static langanal.sentence.processing.VerbPhraseProcessing.ModToWord;
+import static langanal.sentence.processing.VerbPhraseProcessing.VPhToWord;
 
 /**
  * Created by SteinJac.ao on 8/4/2016.
  */
 public class SentenceProcessing {
 
-    private float senRelevancy;//sentence relevancy
 
     /**
      * @param sen1, sentence input
      * @param sen2, "            "
      * @return senRelevancy given, the relativity of the two sentences
      */
-    public float calcRev(Sentence sen1, Sentence sen2){
+    public static float calcRelevancy(Sentence sen1, Sentence sen2){
         //creates all the words as Word classes, stored in the appropriate lists
         LinkedList<LinkedList<Word>> nouns1 = NPhToWord(sen1.getNouns(), sen1.getWords());
         LinkedList<LinkedList<LinkedList<Word>>> nMods1 = ModToWord(sen1.getNouns(),sen1.getWords());
@@ -43,9 +40,7 @@ public class SentenceProcessing {
         float verbRelevancy = 0.15f*calcPhRelevancy(verbs1,verbs2);
         float vModRelevancy = 0.15f*calcModRelevancy(vMods1,vMods2);
 
-        senRelevancy = nounRelevancy + nModRelevancy + verbRelevancy + vModRelevancy;
-
-        return senRelevancy;
+        return nounRelevancy + nModRelevancy + verbRelevancy + vModRelevancy;
     }
 
 
@@ -58,7 +53,7 @@ public class SentenceProcessing {
      *                     VerbPhrase should go with a converted VerbPhrase)
      * @return phraseRelevancy is each relevancy computed averaged
      */
-    private float calcPhRelevancy(LinkedList<LinkedList<Word>> phraseList1, LinkedList<LinkedList<Word>> phraseList2){
+    private static float calcPhRelevancy(LinkedList<LinkedList<Word>> phraseList1, LinkedList<LinkedList<Word>> phraseList2){
         float phraseRelevancy = 0;
         float relevancyCounter = 0;
         for(LinkedList<Word> w1: phraseList1){
@@ -70,7 +65,7 @@ public class SentenceProcessing {
         return phraseRelevancy/relevancyCounter;
     }
 
-    private float calcModRelevancy(LinkedList<LinkedList<LinkedList<Word>>> modList1, LinkedList<LinkedList<LinkedList<Word>>> modList2){
+    private static float calcModRelevancy(LinkedList<LinkedList<LinkedList<Word>>> modList1, LinkedList<LinkedList<LinkedList<Word>>> modList2){
         float modRelevancy = 0;
         float relevancyCounter = 0;
         for(LinkedList<LinkedList<Word>> mod1: modList1){

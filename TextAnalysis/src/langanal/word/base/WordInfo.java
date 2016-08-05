@@ -1,29 +1,21 @@
 package langanal.word.base;
 
 import javax.json.*;
-
-import langanal.word.base.Word;
-
-import java.util.LinkedList;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.LinkedList;
 
 public class WordInfo {
 	private static final String thesaurusApiKey = "Jcglr2EapVZhu3ucPZsc"; //Api key used for online thesaurus resource
 
-	public static void main(String[] args){
-		for(Word w :getDictionaryWords("big")){
-			System.out.println("Word: " + w.getValue());
-			System.out.println(w.getDefinitions().getFirst());
-			System.out.println(w.getExample());
-		}
-	}
-
-
-	//Takes a String, outputs list of Words with that spelling which have definition, part of speech, and synonyms and antonyms filled in
+	/*
+	 * Gets info from dictionary and thesaurus to return a list of words
+	 * that are returned from searching the dictionary for the word inputted
+	 * @param Word to find dictionary entries for
+	 */
 	public static LinkedList<Word> getFullInfoWords(String word) {
-		LinkedList<Word> words = getDictionaryWords(word); 
+		LinkedList<Word> words = getDictionaryWords(word);
 		LinkedList<Word> theWords = new LinkedList<Word>();
 		for(Word w : words){
 			if (w.getValue().equals(word)){
@@ -35,7 +27,11 @@ public class WordInfo {
 		return words;
 	}
 
-	//Takes a String, outputs list of Words with that spelling which have definition and part of speech filled in
+	/*
+	 * Gets info from just dictionary to return a list of words
+	 * that are returned from searching the dictionary for the word inputted
+	 * @param Word to find dictionary entries for
+	 */
 	public static LinkedList<Word> getDictionaryWords(String word) {
 		LinkedList<Word> words = new LinkedList<>();
 
@@ -43,11 +39,11 @@ public class WordInfo {
 		URL url = null;
 		try {
 			url = new URL("http://api.pearson.com/v2/dictionaries/ldoce5/entries?headword="+word);
-		} catch (MalformedURLException e1) {
-			e1.printStackTrace();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
 		}
 		try(InputStream in = url.openStream();
-				JsonReader reader = Json.createReader(in)) {
+			JsonReader reader = Json.createReader(in)) {
 
 			JsonObject obj = reader.readObject();
 			JsonArray results = obj.getJsonArray("results");
@@ -58,17 +54,27 @@ public class WordInfo {
 				String headword = "";
 				String partOfSpeech = "";
 				String exampleSentence = "";
+
+
+				//extracts headword
+				headword = result.getJsonString("headword").toString();
+				headword = headword.substring(1,headword.length()-1);
+
+				//extracts part of speech
+				if(result.containsKey("part_of_speech")){
+					partOfSpeech = result.getJsonString("part_of_speech").toString();
+					partOfSpeech = partOfSpeech.substring(1, partOfSpeech.length()-1);
+				}
+
+
+
+				//checks if result has "senses" entry, which contains definition and examples
 				if(!result.containsValue(JsonObject.NULL)){
-					if(result.containsKey("part_of_speech") && result.getJsonArray("senses").getJsonObject(0).containsKey("definition")){
 
-						headword = result.getJsonString("headword").toString();
-						headword = headword.substring(1,headword.length()-1);
+					JsonObject senses = result.getJsonArray("senses").getJsonObject(0);
 
-						partOfSpeech = result.getJsonString("part_of_speech").toString();
-						partOfSpeech = partOfSpeech.substring(1, partOfSpeech.length()-1);
-						
-						JsonObject senses = result.getJsonArray("senses").getJsonObject(0);
-						
+					//checks if result has definitions
+					if(senses.containsKey("definition")){
 						//getting all definitions
 						JsonArray defArr = senses.getJsonArray("definition");
 						for(JsonValue j : defArr){
@@ -76,18 +82,21 @@ public class WordInfo {
 							str = str.substring(1,str.length()-1);
 							definitions.add(str);
 						}
-						
+
+						//checks if entry has example sentences
 						if(senses.containsKey("examples")){
 							JsonObject examples = senses.getJsonArray("examples").getJsonObject(0);
 							if(examples.containsKey("text")){
+								//extracts example sentence
 								exampleSentence = examples.getJsonString("text").toString();
 								exampleSentence = exampleSentence.substring(1, exampleSentence.length()-1);
 							}
 						}
-						//adding new word with info gathered to return list
-						words.add(new Word(headword,partOfSpeech,definitions,exampleSentence));
 					}
 				}
+
+				//adding new word with info gathered to return list
+				words.add(new Word(headword,partOfSpeech,definitions,exampleSentence));
 			}
 		} catch(Exception e){
 			e.printStackTrace();
@@ -107,7 +116,7 @@ public class WordInfo {
 			e1.printStackTrace();
 		}
 		try(InputStream in = url.openStream();
-				JsonReader reader = Json.createReader(in)) {
+			JsonReader reader = Json.createReader(in)) {
 
 			JsonObject obj = reader.readObject();
 			JsonArray results = obj.getJsonArray("response");
@@ -129,6 +138,7 @@ public class WordInfo {
 						data = data.substring(1, data.length()-1);
 						String[] dataArr = data.split("\\|");
 						for(String str : dataArr){
+							//processing words and sorting between synonyms and antoynyms
 							str = str.replace(" (related term)", "");
 							str = str.replace(" (similar term)", "");
 							if(str.contains(" (antonym)")){

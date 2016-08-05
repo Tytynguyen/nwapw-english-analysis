@@ -16,6 +16,8 @@ public class Word {
 		this.POS = POS;
 		this.definitions = definitions;
 		this.exampleSentence = exampleSentence;
+		this.synonyms = new LinkedList<>();
+		this.antonyms = new LinkedList<>();
 	}
 
 	public String getValue(){	return this.value; 	}
