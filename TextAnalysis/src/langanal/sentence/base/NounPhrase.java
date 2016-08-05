@@ -29,4 +29,15 @@ public class NounPhrase {
 		returnString += '\n';
 		return returnString;
 	}
+	
+	public int getIndex(){return (int)noun.pseudoPosition()-1;}
+
+	public int[] getModIndex() {
+		int[] ModIndex = new int[modifiers.size()];
+		int i = 0;
+		for (IndexedWord mod : modifiers) {
+			ModIndex[i] = (int) mod.pseudoPosition() - 1;
+		}
+		return ModIndex;
+	}
 }

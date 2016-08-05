@@ -30,6 +30,10 @@ public class Sentence {
 	LinkedList<NounPhrase> nouns = new LinkedList<>();
 	LinkedList<VerbPhrase> verbs = new LinkedList<>();
 	LinkedList<LinkedList<Word>> words = new LinkedList<>();
+	
+	public LinkedList<NounPhrase> getNouns(){return nouns;};
+	public LinkedList<VerbPhrase> getVerbs(){return verbs;};
+	public LinkedList<LinkedList<Word>> getWords(){return words;}
 
 	/*
 	 * Creates a new Sentence with all data filled in for comparison with other sentences
