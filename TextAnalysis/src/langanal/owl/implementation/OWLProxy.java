@@ -46,12 +46,9 @@ public class OWLProxy {
      * Walks the ontology searching for a given item
 	 *
 	 * @param toFind has the word that needs to be found
-     * @return A List of OWLClasses beginning with the found expression and ending with the root expression, or null if couldn't find the word
+     * @return The corresponding class, or null if couldn't find the word
      */
-    private List<OWLClass> walkOntology(final String toFind) {
-
-		//create a LinkedList of OWLClasses that will be returned
-		LinkedList<OWLClassExpression> hierarchy = new LinkedList<OWLClassExpression>();
+    private OWLClass walkOntology(String toFind) {
 
 		//for every class in the ontology
 		for (OWLClass currentClass:ontology.getClassesInSignature()) {
@@ -68,7 +65,7 @@ public class OWLProxy {
 			if (currentWord.equals(toFind)) {
 				//System.out.println("Found word");
 				//call step up to find the parents
-				return stepUp(currentClass);
+				return currentClass;
 			}
 		}
 
@@ -78,25 +75,12 @@ public class OWLProxy {
 
 	/**
 	 *
-	 * Recursive function that finds parents of a given class
-	 *
-	 * @param lastClass class to find parents of
+	 * @param firstClass to path between
+	 * @param secondClass to path between
+	 * @return The shortest path as a list of OWLClasses including the roots
 	 */
-	private LinkedList<OWLClass> stepUp(OWLClass lastClass) {
+	private List<OWLClass> findPath(OWLClass firstClass, OWLClass secondClass) {
 
-		LinkedList<OWLClass> hierarchy = new LinkedList<OWLClass>();
-
-		hierarchy.add(lastClass);
-
-		//kludgy way of getting the first element
-		boolean hasRun = false;
-		for (OWLSubClassOfAxiom currentAxiom:ontology.getSubClassAxiomsForSubClass(lastClass.asOWLClass())) {
-			if (!hasRun) {
-				hasRun = true;
-				hierarchy.addAll(stepUp(currentAxiom.getSuperClass().asOWLClass()));
-			}
-		}
-		return hierarchy;
 	}
 
     /**
@@ -107,36 +91,24 @@ public class OWLProxy {
      */
     public int degreesOfSeparation(String firstWord, String secondWord) {
 
+    	//starts at -2 to negate the two roots in the counting
+    	int degreesOfSeparation = -2;
 
-    	//gets the hierarchy
-		List<OWLClass> firstHierarchy = walkOntology(firstWord);
-		List<OWLClass> secondHierarchy = walkOntology(secondWord);
+    	//gets the classes
+		OWLClass firstClass = walkOntology(firstWord);
+		OWLClass secondClass = walkOntology(secondWord);
 
 		//if either is empty (no word found), return -1
-		if (firstHierarchy == null | secondHierarchy == null) {
+		if (firstClass == null | secondClass == null) {
 			return -1;
 		}
 
 		//System.out.println("––––––––––––––––––––––––––––––––––––––––––––––");
 
 		//determines degrees of separation
-
-		//find the closest commonality
-		//assumes iterator works front to back
-		for (OWLClass firstCurrent:firstHierarchy) {
-			for (OWLClass secondCurrent:secondHierarchy) {
-				//if they have a commonality
-				if (firstCurrent.equals(secondCurrent)) {
-					//number of elements left
-					int firstLeft = firstHierarchy.indexOf(firstCurrent);
-					int secondLeft = firstHierarchy.indexOf(secondCurrent);
-					//return the total
-					return firstLeft+secondLeft;
-				}
-			}
+		for (OWLClass currentClass:findPath(firstClass, secondClass)) {
+			degreesOfSeparation++;
 		}
-
-		return -1;
 
 	}
 
