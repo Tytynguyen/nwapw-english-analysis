@@ -1,24 +1,21 @@
 package langanal.word.base;
 
 import javax.json.*;
-
-import langanal.word.base.Word;
-
-import java.util.LinkedList;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.LinkedList;
 
 public class WordInfo {
 	private static final String thesaurusApiKey = "Jcglr2EapVZhu3ucPZsc"; //Api key used for online thesaurus resource
 
 	/*
-	 * Gets info from dictionary and thesaurus to return a list of words 
+	 * Gets info from dictionary and thesaurus to return a list of words
 	 * that are returned from searching the dictionary for the word inputted
 	 * @param Word to find dictionary entries for
 	 */
 	public static LinkedList<Word> getFullInfoWords(String word) {
-		LinkedList<Word> words = getDictionaryWords(word); 
+		LinkedList<Word> words = getDictionaryWords(word);
 		LinkedList<Word> theWords = new LinkedList<Word>();
 		for(Word w : words){
 			if (w.getValue().equals(word)){
@@ -31,7 +28,7 @@ public class WordInfo {
 	}
 
 	/*
-	 * Gets info from just dictionary to return a list of words 
+	 * Gets info from just dictionary to return a list of words
 	 * that are returned from searching the dictionary for the word inputted
 	 * @param Word to find dictionary entries for
 	 */
@@ -42,11 +39,11 @@ public class WordInfo {
 		URL url = null;
 		try {
 			url = new URL("http://api.pearson.com/v2/dictionaries/ldoce5/entries?headword="+word);
-		} catch (MalformedURLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		try(InputStream in = url.openStream();
-				JsonReader reader = Json.createReader(in)) {
+			JsonReader reader = Json.createReader(in)) {
 
 			JsonObject obj = reader.readObject();
 			JsonArray results = obj.getJsonArray("results");
@@ -114,12 +111,12 @@ public class WordInfo {
 		URL url = null;
 		try {
 			url = new URL("http://thesaurus.altervista.org/thesaurus/v1?output=json&language=en_US&key="+thesaurusApiKey+"&word="+words.getFirst().getValue());
-		} catch (MalformedURLException e1) {
+		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		try(InputStream in = url.openStream();
-				JsonReader reader = Json.createReader(in)) {
+			JsonReader reader = Json.createReader(in)) {
 
 			JsonObject obj = reader.readObject();
 			JsonArray results = obj.getJsonArray("response");

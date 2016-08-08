@@ -1,9 +1,9 @@
 package langanal.word.processing;
 
+import langanal.word.base.Word;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
-
-import langanal.word.base.Word;
 
 public class WordProcessing {
 	//Weights
@@ -21,8 +21,8 @@ public class WordProcessing {
 	/**
 	 * Compares, processes, and returns the relevancy of the two words
 	 * 
-	 * @param word1
-	 * @param word2
+	 * @param allWord1
+	 * @param allWord2
 	 * @return The % relevancy
 	 */
 	public static float compareWords(LinkedList<Word> allWord1, LinkedList<Word> allWord2){
