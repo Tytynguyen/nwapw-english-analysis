@@ -39,7 +39,7 @@ public class WordInfo {
 		URL url = null;
 		try {
 			url = new URL("http://api.pearson.com/v2/dictionaries/ldoce5/entries?headword="+word);
-		} catch (MalformedURLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		try(InputStream in = url.openStream();
@@ -111,7 +111,7 @@ public class WordInfo {
 		URL url = null;
 		try {
 			url = new URL("http://thesaurus.altervista.org/thesaurus/v1?output=json&language=en_US&key="+thesaurusApiKey+"&word="+words.getFirst().getValue());
-		} catch (MalformedURLException e1) {
+		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
