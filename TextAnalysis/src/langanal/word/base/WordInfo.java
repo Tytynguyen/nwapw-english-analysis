@@ -4,12 +4,17 @@ import javax.json.*;
 
 import langanal.word.base.Word;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 public class WordInfo {
+
+	private static HashMap<String,LinkedList<Word>> storedDefinitions = new HashMap<String,LinkedList<Word>>();
+	private static HashMap<String,LinkedList<Word>> storedThesaurus = new HashMap<String,LinkedList<Word>>();
+
 	private static final String thesaurusApiKey = "Jcglr2EapVZhu3ucPZsc"; //Api key used for online thesaurus resource
 
 	/*
@@ -36,6 +41,11 @@ public class WordInfo {
 	 * @param Word to find dictionary entries for
 	 */
 	public static LinkedList<Word> getDictionaryWords(String word) {
+
+		if (storedDefinitions.containsKey(word)) {
+			return storedDefinitions.get(word);
+		}
+
 		LinkedList<Word> words = new LinkedList<>();
 
 		//Receiving info from server
@@ -104,6 +114,9 @@ public class WordInfo {
 		} catch(Exception e){
 			e.printStackTrace();
 		}
+
+		storedDefinitions.put(word,words);
+
 		return words;
 	}
 
