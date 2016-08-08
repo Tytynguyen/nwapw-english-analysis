@@ -96,7 +96,6 @@ public class SentenceParser {
         int index = 0;
         for(Object o : temp){
             dependencies[index] = (TypedDependency) o;
-            System.out.println(dependencies[index]);
             index++;
         }
         return dependencies;

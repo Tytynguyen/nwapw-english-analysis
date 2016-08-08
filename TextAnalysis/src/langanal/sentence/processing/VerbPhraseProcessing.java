@@ -39,8 +39,7 @@ public class VerbPhraseProcessing {
                     n.add(i,sentence.get(ModIndex[i]));
                 }
             }
-            mod.add(j,n);
-            j++;
+            mod.addLast(n);
         }
         return mod;
     }

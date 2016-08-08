@@ -35,16 +35,30 @@ public class SentenceProcessing {
 		LinkedList<LinkedList<LinkedList<Word>>> vMods2 = ModToWord(sen2.getVerbs(),sen2.getWords());
 
 		//each average is wieghted to add up to a whole
-		float nounRelevancy = 0.4f*calcPhRelevancy(nouns1,nouns2);
-		float nModRelevancy = 0.1f*calcModRelevancy(nMods1,nMods2);
-		float verbRelevancy = 0.4f*calcPhRelevancy(verbs1,verbs2);
-		float vModRelevancy = 0.1f*calcModRelevancy(vMods1,vMods2);
-
-		float relevancy = nounRelevancy + nModRelevancy + verbRelevancy + vModRelevancy;
-		//relevancy = relevancy = (float) (200*(1/(1+Math.pow(Math.E,-(relevancy/9)))-0.5));
-		if(relevancy >= 99){
-			relevancy = 100;
+		float nounRelevancy;
+		float nModRelevancy;
+		float verbRelevancy;
+		float vModRelevancy;
+		
+		if(!nMods1.isEmpty() && !nMods2.isEmpty()){
+			nounRelevancy = 0.4f*calcPhRelevancy(nouns1,nouns2);
+			nModRelevancy = 0.1f*calcModRelevancy(nMods1,nMods2);
+		} else {
+			nounRelevancy = 0.5f*calcPhRelevancy(nouns1,nouns2);
+			nModRelevancy = 0;
 		}
+		
+		if(!vMods1.isEmpty() && !vMods2.isEmpty()){
+			verbRelevancy = 0.4f*calcPhRelevancy(verbs1,verbs2);
+			vModRelevancy = 0.1f*calcModRelevancy(vMods1,vMods2);
+		} else {
+			verbRelevancy = 0.5f*calcPhRelevancy(verbs1,verbs2);
+			vModRelevancy = 0;
+		}
+		
+		float relevancy = nounRelevancy + nModRelevancy + verbRelevancy + vModRelevancy;
+		relevancy = relevancy = (float) (200*(1/(1+Math.pow(Math.E,-(relevancy/9.5)))-0.5));
+		
 		return relevancy;
 	}
 
