@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.LinkedList;
+import langanal.UserInterface.GUI;
 
 public class WordInfo {
 	private static final String thesaurusApiKey = "Jcglr2EapVZhu3ucPZsc"; //Api key used for online thesaurus resource
@@ -98,8 +99,10 @@ public class WordInfo {
 				//adding new word with info gathered to return list
 				words.add(new Word(headword,partOfSpeech,definitions,exampleSentence));
 			}
-		} catch(Exception e){
+		} catch(Exception e){//Issue w/ dictionary
 			e.printStackTrace();
+			GUI error = new GUI();
+			error.errorDialogue();
 		}
 		return words;
 	}

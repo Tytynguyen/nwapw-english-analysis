@@ -15,24 +15,30 @@ import java.awt.event.KeyEvent;
  */
 public class GUI extends JPanel implements ActionListener {
 
+    //youtube vid for multithreading: https://www.youtube.com/watch?v=X5Q-Mecu_64
+
+
     public String text1;
     public String text2;
     public float relevancy;
 
+    public JFrame errMsg;//frame for error mesage dialogue
     public JLabel instructions;//how to operate the application
     public JTextArea inTA1;//input TextArea 1
     public JTextArea inTA2;//iput TextArea 2
     public JButton trigger;//initiates computations
     public JTextArea feedback;//an output TextArea for relativity feedback
 
+    public JProgressBar progress;
+
 
     /**
      * @param Pane, JFrame frame will be taken in and given components
      *
      */
-    public void addComponents(Container Pane){
+    private void addComponents(Container Pane){
         JPanel p = new JPanel();
-        //p.setBackground(new Color(156, 110, 92));
+        p.setBackground(new Color(198, 210, 181));
         p.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(10,10,10,10);
@@ -52,14 +58,18 @@ public class GUI extends JPanel implements ActionListener {
         inTA1.setBorder(border);
         inTA1.setBackground(smokeWhite);
         c.gridy = 1;
-        p.add(inTA1, c);
+        JScrollPane scrollInTA1 = new JScrollPane(inTA1);
+        scrollInTA1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        p.add(scrollInTA1, c);
 
         //definitions for inTA2
         inTA2 = new JTextArea(5,0);
         inTA2.setBorder(border);
         inTA2.setBackground(smokeWhite);
         c.gridy = 2;
-        p.add(inTA2, c);
+        JScrollPane scrollInTA2 = new JScrollPane(inTA2);
+        scrollInTA2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        p.add(scrollInTA2, c);
 
         //definitions for trigger
         trigger = new JButton("Compute");
@@ -70,31 +80,39 @@ public class GUI extends JPanel implements ActionListener {
         trigger.addActionListener(this);
         p.add(trigger,c);
 
-        //definitions for
+        //definitions for progress
+        progress = new JProgressBar();
+        progress.setIndeterminate(false);
+        progress.setForeground(Color.red);
+        progress.setBackground(Color.BLACK);
+        c.gridy = 4;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        p.add(progress,c);
+
+        //definitions for feedback
         feedback = new JTextArea(10,0);
         feedback.setBorder(border);
         feedback.setBackground(smokeWhite);
         feedback.setEditable(false);
-        c.gridy = 4;
-        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridy = 5;
         p.add(feedback,c);
 
         Pane.add(p);
-
     }
+
 
     /**
      * @param relevancy
      * @return feedback string is given
      */
-    public String TextOut(float relevancy){
+    private String TextOut(float relevancy){
         return "" + relevancy;
     }
 
     /**
      * creates the GUI
      */
-    public void createAndShowGUI(){
+    private void createAndShowGUI(){
         JFrame frame = new JFrame("Text Relevancy Application");
         frame.setSize(440,480);
         frame.setResizable(false);
@@ -105,15 +123,28 @@ public class GUI extends JPanel implements ActionListener {
         frame.setVisible(true);
     }
 
+    public void errorDialogue(){
+        JOptionPane.showMessageDialog(errMsg, "Please check your spelling. \n" +
+                "       If error reoccures, " +
+                "then a word you are using is not" +
+                "        in our dictionary", "Dictionary Error", JOptionPane.ERROR_MESSAGE);
+    }
+
     /**
      * @param e listens for the button "trigger" to be clicked
      */
     public void actionPerformed(ActionEvent e){
+        progress.setIndeterminate(true);
+        feedback.setText("");
         if(!inTA1.getText().equals("") && !inTA2.getText().equals("")){
             text1 = inTA1.getText();
             text2 = inTA2.getText();
             this.relevancy = SentenceProcessing.calcRelevancy(new Sentence(text1),new Sentence(text2));
+            progress.setIndeterminate(false);
             feedback.setText(TextOut(relevancy));
+        }else{
+            feedback.setText(" Please enter text in the two text fields above before pressing \"Compute\"");
+            progress.setIndeterminate(false);
         }
     }
 
