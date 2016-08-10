@@ -9,9 +9,9 @@ public class OWLOntologyUsage {
 	
 	/**
 	 * Finds the degree of separation between two words in ontology
-	 * @param firstWord
-	 * @param secondWord
-	 * @return degree of seperation. -1 if one of the words is not found
+	 * @param firstWord to find
+	 * @param secondWord to find
+	 * @return degrees of separation or -1 if any of the words are not found
 	 */
 	public static int degreesOfSeparation(String firstWord, String secondWord){
 		OWLClass firstClass = B.getOWLClass(firstWord);

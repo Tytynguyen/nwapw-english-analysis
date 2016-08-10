@@ -25,7 +25,7 @@ public class Base {
 		try {
 			OWLOntologyManagerImpl OWLM = (OWLOntologyManagerImpl) OWLManager.createOWLOntologyManager();
 		
-			if(filename!=""){
+			if(!filename.equals("")){
 				this.ontology = OWLM.loadOntologyFromOntologyDocument(new File("lib/" + filename));
 			}else{
 				this.ontology = OWLM.loadOntologyFromOntologyDocument(sumoXML);
@@ -39,7 +39,7 @@ public class Base {
 		} catch (OWLOntologyCreationException e) {
 			System.err.println("Could not load XML file!");
 			e.printStackTrace();
-		};
+		}
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class Base {
 	 */
 	public LinkedList<OWLClass> getParents(OWLClass child){
 		LinkedList<OWLClass> returnList = new LinkedList<OWLClass>();
-		
+
 		for(OWLSubClassOfAxiom curAxiom : ontology.getSubClassAxiomsForSubClass(child)) {
 			returnList.add(curAxiom.getSuperClass().asOWLClass());
 		}
