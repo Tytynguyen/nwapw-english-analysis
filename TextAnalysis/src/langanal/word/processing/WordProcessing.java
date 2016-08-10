@@ -52,7 +52,7 @@ public class WordProcessing {
 	 * @param word2 to compare
 	 * @return The % relevancy
 	 */
-	public static float compareWords(String word1, String word2){
+	public static float compareWords(LinkedList<Word> allWord1, LinkedList<Word> allWord2){
 		//debugging
 		increment = 0;
 
@@ -69,14 +69,6 @@ public class WordProcessing {
 			float defDefTValue = 0;
 			float isSynTValue = 0;
 			float isAntTValue = 0;
-
-
-		//Stores the words with the same spelling into one LinkedList
-		LinkedList<Word> allWord1 = new LinkedList<Word>();
-		LinkedList<Word> allWord2 = new LinkedList<Word>();
-
-		allWord1 = WordInfo.getFullInfoWords(word1);
-		allWord2 = WordInfo.getFullInfoWords(word2);
 
 		//Makes sure that the word exists
 		if(allWord1.size() != 0 && allWord2.size() != 0){
@@ -153,11 +145,8 @@ public class WordProcessing {
 			//relevancy = (float) (200*(1/(1+Math.pow(Math.E,-(relevancy/5)))-0.5));
 			relevancy = (float) Math.min(100,Math.pow(relevancy, 2)/25f);
 		}else{
-			if(allWord1.size() == 0){
-				System.err.println("ERROR: Word \"" + word1 + "\" was not found in the dictionary or thesaurus. Check your spelling.");
-			}
-			if(allWord2.size() == 0){
-				System.err.println("ERROR: Word \"" + word2 + "\" was not found in the dictionary or thesaurus. Check your spelling.");
+			if(allWord1.size() == 0 || allWord2.size() == 0){
+				System.err.println("ERROR: Word was not found in the dictionary or thesaurus. Check your spelling.");
 			}
 		}
 
@@ -572,8 +561,26 @@ public class WordProcessing {
 	 * @param word2
 	 * @return int degree of separation
 	 */
-	private static int checkOntologySeparation(Word word1, Word word2){
+	private static int checkOntologySeparation(String word1,String word2){
 		System.out.println("starting");
-		return OWLOntologyUsage.degreesOfSeparation(word1.getValue(), word2.getValue());
+		return OWLOntologyUsage.degreesOfSeparation(word1, word2);
+	}
+	
+	private static int checkBestOntologySynonym(Word word1, Word word2){
+		int shortestConnection = 1000000;
+		for(String synonym: word1.getSynonyms()){
+			int connection = checkOntologySeparation(word2.getValue(),synonym);
+			if(connection<shortestConnection){
+				shortestConnection = connection;
+			}
+		}
+		
+		for(String synonym: word2.getSynonyms()){
+			int connection = checkOntologySeparation(word1.getValue(),synonym);
+			if(connection<shortestConnection){
+				shortestConnection = connection;
+			}
+		}
+		return shortestConnection;
 	}
 }
