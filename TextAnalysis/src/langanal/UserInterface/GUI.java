@@ -116,7 +116,7 @@ public class GUI extends JPanel implements ActionListener {
      * creates the GUI
      */
     private void createAndShowGUI(){
-        JFrame frame = new JFrame("Text Relevancy Application");
+        JFrame frame = new JFrame("English Sentence Relevancy Analysis");
         frame.setSize(440,480);
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
