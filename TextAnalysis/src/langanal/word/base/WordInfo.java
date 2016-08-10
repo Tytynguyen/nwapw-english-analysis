@@ -2,7 +2,6 @@ package langanal.word.base;
 
 import javax.json.*;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.LinkedList;
 import langanal.UserInterface.GUI;
