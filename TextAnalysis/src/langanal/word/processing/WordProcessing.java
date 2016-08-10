@@ -49,7 +49,6 @@ public class WordProcessing {
 		}else{
 			System.err.println("ERROR: One of the words was not found in the dictionary or thesaurus. Check your spelling.");
 		}
-		System.out.println(relevancy + " " + allWord1.getFirst().getValue() + " " + allWord2.getFirst().getValue());
 		return relevancy;
 
 	}
