@@ -1,5 +1,6 @@
 package langanal.word.processing;
 
+import langanal.owl.implementation.OWLOntologyUsage;
 import langanal.word.base.Word;
 
 import java.util.ArrayList;
@@ -25,12 +26,13 @@ public class WordProcessing {
 	public static float defDefWeight = 1;
 	public static float isSynWeight = 1;
 	public static float isAntWeight = 1;
+	public static float ontologyWeight = 4;
 
 	//compiling the regular expression so it doesn't have to be recompiled every time in definitionToWords
 	private static Pattern alphabetic = Pattern.compile("[^a-zA-Z ]");
 	//number of functions being used to calculate relevancy
 	//needed for other equations
-	private static int numFunctions = 7;
+	private static int numFunctions = 11;
 
 
 	//debugging
@@ -123,6 +125,11 @@ public class WordProcessing {
 
 				}
 			}
+
+			float separationValue = (1/checkOntologySeparation(allWord1.getFirst(),allWord2.getFirst()))*ontologyWeight;
+			relevancy+=separationValue;
+
+
 			if(debugging){
 				System.out.println();
 				System.out.println("\tdefT: " + definitiontValue);
@@ -135,6 +142,7 @@ public class WordProcessing {
 				System.out.println("\tdDT: " + defDefTValue);
 				System.out.println("\tisS: " + isSynTValue);
 				System.out.println("\tisT: " + isAntTValue);
+				System.out.println("\tontVT: " + separationValue);
 
 				System.out.println("\tTotal rel: " + relevancy);
 			}
@@ -556,5 +564,16 @@ public class WordProcessing {
 		}
 		System.out.println(returnList);
 		return returnList;
+	}
+	
+	/**
+	 * Finds the degree of separation using ontologies
+	 * @param word1
+	 * @param word2
+	 * @return int degree of separation
+	 */
+	private static int checkOntologySeparation(Word word1, Word word2){
+		System.out.println("starting");
+		return OWLOntologyUsage.degreesOfSeparation(word1.getValue(), word2.getValue());
 	}
 }
