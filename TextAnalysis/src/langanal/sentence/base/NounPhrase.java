@@ -17,7 +17,12 @@ public class NounPhrase {
 		this.modifiers = modifiers;
 		this.sentence = sentence;
 	}
-	
+
+	/**
+	 *
+	 * @param modifier to be added to the given NounPhrase
+	 * @return true if the modifier didn't already exist and was added, false otherwise
+	 */
 	public boolean addMod(IndexedWord modifier){
 		if(!modifiers.contains(modifier)){
 			modifiers.add(modifier);
@@ -45,7 +50,10 @@ public class NounPhrase {
 		}
 		return ModIndex;
 	}
-	
+
+	/**
+	 * @return a List of modifiers as Words for the given NounPhrase
+	 */
 	public LinkedList<LinkedList<Word>> getModifiers(){
 		LinkedList<LinkedList<Word>> returnList = new LinkedList<>();
 		for(IndexedWord modifier:modifiers){

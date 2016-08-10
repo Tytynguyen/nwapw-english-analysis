@@ -1,24 +1,15 @@
 package langanal.sentence.processing;
 
-import langanal.sentence.base.NounPhrase;
-import langanal.sentence.base.Sentence;
-import langanal.sentence.base.VerbPhrase;
+import langanal.sentence.base.*;
 import langanal.word.base.Word;
 import langanal.word.processing.WordProcessing;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import static langanal.sentence.processing.NounPhraseProcessing.ModToWord;
-import static langanal.sentence.processing.NounPhraseProcessing.NPhToWord;
-import static langanal.sentence.processing.VerbPhraseProcessing.ModToWord;
-import static langanal.sentence.processing.VerbPhraseProcessing.VPhToWord;
-
-/**
- * Created by SteinJac.ao on 8/4/2016.
- */
 public class SentenceProcessing {
 
+	private static boolean debugging = false;
 
 	/**
 	 * @param sen1, sentence input
@@ -33,8 +24,8 @@ public class SentenceProcessing {
 	
 
 	/**
-	 * @param verbList1
-	 * @param verbList2
+	 * @param vl1 First List of VerbPhrases to compare
+	 * @param vl2 Second List of VerbPhrases to compare
 	 * @return relevancy between two lists of verbs
 	 * Takes in two lists of VerbPhrases and returns the relevancy between them
 	 */
@@ -116,15 +107,17 @@ public class SentenceProcessing {
 				verbTotalComparisons++;
 			}
 		}
-		
-		System.out.println("Verb Average " +verbComparisonsAvg/verbTotalComparisons);
+
+		if (debugging) {
+			System.out.println("Verb Average " + verbComparisonsAvg / verbTotalComparisons);
+		}
 		return verbComparisonsAvg/verbTotalComparisons;
 	}
 	
 	
 	/**
-	 * @param nounList1
-	 * @param nounList2
+	 * @param nl1 First list of NounPhrases to compare
+	 * @param nl2 Second list of NounPhrases to compare
 	 * @return relevancy between two lists of nouns
 	 * Takes in two lists of VerbPhrases and returns the relevancy between them
 	 */
@@ -206,7 +199,10 @@ public class SentenceProcessing {
 				nounTotalComparisons++;
 			}
 		}
-		System.out.println("Noun Average " +nounComparisonsAvg/nounTotalComparisons);
+		if (debugging) {
+			System.out.println("Noun Average " + nounComparisonsAvg / nounTotalComparisons);
+		}
 		return nounComparisonsAvg/nounTotalComparisons;
 	}
+
 }
