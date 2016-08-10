@@ -7,6 +7,9 @@ import java.util.PriorityQueue;
 import org.semanticweb.owlapi.model.OWLClass;
 
 public class OWLFinder {
+
+	private boolean debugging = false;
+
 	public class OWLGraphNode implements Comparable<OWLGraphNode> {
 
 		private OWLClass value; //Stores the class
@@ -56,7 +59,9 @@ public class OWLFinder {
 	 * @return The shortest path as a list of OWLClasses including the roots
 	 */
 	public LinkedList<OWLClass> findPath(OWLClass firstClass, OWLClass secondClass) {
-		System.out.println("starting pathfinding");
+		if (debugging) {
+			System.out.println("Starting pathfinding");
+		}
 		//Starting node
 		OWLGraphNode firstOWLGraphNode = new OWLGraphNode(firstClass);
 		firstOWLGraphNode.pathTo.add(firstOWLGraphNode);
@@ -82,7 +87,9 @@ public class OWLFinder {
 			 *First word 
 			 */
 			OWLGraphNode checkingFirstNode = firstFrontier.remove();
-			System.out.println("First word: " + checkingFirstNode.getValue());
+			if (debugging) {
+				System.out.println("First word: " + checkingFirstNode.getValue());
+			}
 
 			if(checkingFirstNode.getValue().equals(secondOWLGraphNode.getValue())){	//If the checking node is end node, return its path
 				return checkingFirstNode.pathToAsOWL();
@@ -98,7 +105,11 @@ public class OWLFinder {
 					Collections.reverse(secondHolder);//Reverses the path, so that we may add it onto the return list
 
 					returnList.addAll(checkingFirstNode.pathToAsOWL());
+					secondHolder.removeFirst();
 					returnList.addAll(secondHolder);
+					if (debugging) {
+						System.out.println(returnList);
+					}
 					return returnList;
 				}
 			}
@@ -132,7 +143,9 @@ public class OWLFinder {
 			 *Second word 
 			 */
 			OWLGraphNode checkingSecondNode = secondFrontier.remove();
-			System.out.println("Second word: " + checkingSecondNode.getValue());
+			if (debugging) {
+				System.out.println("Second word: " + checkingSecondNode.getValue());
+			}
 
 			if(checkingSecondNode.getValue().equals(firstOWLGraphNode.getValue())){	//If the checking node is end node, return its path
 				return checkingSecondNode.pathToAsOWL();
@@ -148,7 +161,12 @@ public class OWLFinder {
 					Collections.reverse(firstHolder);//Reverses the path, so that we may add it onto the return list
 
 					returnList.addAll(checkingSecondNode.pathToAsOWL());
+					firstHolder.removeFirst();
 					returnList.addAll(firstHolder);
+
+					if (debugging) {
+						System.out.println(returnList);
+					}
 					return returnList;
 				}
 			}

@@ -24,7 +24,8 @@ public class Base {
 		
 		try {
 			OWLOntologyManagerImpl OWLM = (OWLOntologyManagerImpl) OWLManager.createOWLOntologyManager();
-		
+
+			//allows for custom ontology loading
 			if(!filename.equals("")){
 				this.ontology = OWLM.loadOntologyFromOntologyDocument(new File("lib/" + filename));
 			}else{
@@ -43,7 +44,7 @@ public class Base {
 	}
 
 	/**
-	 * Finds and returms the OWLClass with the same identifier as the input
+	 * Finds and returns the OWLClass with the same identifier as the input
 	 * @param word String to be searched for
 	 * @return OWLClass of the word
 	 */
