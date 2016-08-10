@@ -25,8 +25,8 @@ public class WordProcessing {
 	private static Pattern alphabetic = Pattern.compile("[^a-zA-Z ]");
 
 	//debugging
-	public static int increment;
-	public static boolean debugging = true;
+	private static int increment;
+	private static boolean debugging = true;
 
 	//Stores the common "trash" words that shouldn't be used to find similarities
 	private static String[] commonWords = new String[]{
@@ -37,8 +37,8 @@ public class WordProcessing {
 	/**
 	 * Compares, processes, and returns the relevancy of the two words
 	 * 
-	 * @param word1
-	 * @param word2
+	 * @param word1 to compare
+	 * @param word2 to compare
 	 * @return The % relevancy
 	 */
 	public static float compareWords(String word1, String word2){
@@ -144,8 +144,8 @@ public class WordProcessing {
 	/**
 	 * Counts the repetition of words in each definition
 	 * 
-	 * @param word1
-	 * @param word2
+	 * @param word1 to compare
+	 * @param word2 compare
 	 * @return The number of repetitions
 	 */
 	public static int checkDefinitionSimilarities(Word word1, Word word2){
@@ -191,9 +191,9 @@ public class WordProcessing {
 	 *
 	 * Checks the relevancy of the definitions of the definitions of words
 	 *
-	 * @param word1
-	 * @param word2
-	 * @return
+	 * @param word1 to compare
+	 * @param word2 to compare
+	 * @return //TODO will be filled in after being normalized
 	 */
 	public static int checkDefinitionsDefinitions(Word word1, Word word2) {
 
@@ -262,9 +262,9 @@ public class WordProcessing {
 	 *
 	 * Check the similarity of the definitions of the synonyms of words
 	 *
-	 * @param word1
-	 * @param word2
-	 * @return int representing similarity
+	 * @param word1 to compare
+	 * @param word2 to compare
+	 * @return //TODO will be filled in after normalized
 	 */
 	private static int checkSynonymDefinitionSimilarities(Word word1, Word word2) {
 
@@ -288,9 +288,9 @@ public class WordProcessing {
 	 *
 	 * Check the similarity of the definitions of the antonyms of words
 	 *
-	 * @param word1
-	 * @param word2
-	 * @return int representing similarity
+	 * @param word1 to compare
+	 * @param word2 to compare
+	 * @return //TODO will be filled in after normalized
 	 */
 	private static int checkAntonymDefinitionSimilarities(Word word1, Word word2) {
 
@@ -313,8 +313,8 @@ public class WordProcessing {
 
 	/**
 	 * Returns an ArrayList of words that are formatted for checkDefinition()
-	 * @param definition
-	 * @return
+	 * @param definition to convert
+	 * @return ArrayList of Strings of lower case alphabetic characters
 	 */
 	private static ArrayList<String> definitionToWords(String definition){
 
@@ -331,7 +331,7 @@ public class WordProcessing {
 	/**
 	 * Determines whether the inputted word is a common one
 	 * 
-	 * @param word
+	 * @param word to test
 	 * @return Boolean whether the inputted word is a common word
 	 */
 	private static Boolean isCommonWord(String word){
@@ -348,8 +348,8 @@ public class WordProcessing {
 	/**
 	 * Checks to see if the POS is the same between two words
 	 * 
-	 * @param word1
-	 * @param word2
+	 * @param word1 to compare
+	 * @param word2 to compare
 	 * @return 1 if they share the same POS, 0 if they do not share the same POS
 	 */
 	public static int checkPOSSimilarities(Word word1, Word word2){
@@ -371,12 +371,12 @@ public class WordProcessing {
 	public static boolean checkSynonyms(Word word1, Word word2) {
 
 		for (String s:splitThesaurusWords(word1.getSynonyms())) {
-			if (s.equals(word2)) {
+			if (s.equals(word2.toString())) {
 				return true;
 			}
 		}
 		for (String s:splitThesaurusWords(word2.getSynonyms())) {
-			if (s.equals(word1)) {
+			if (s.equals(word1.toString())) {
 				return true;
 			}
 		}
@@ -392,12 +392,12 @@ public class WordProcessing {
 	public static boolean checkAntonyms(Word word1, Word word2) {
 
 		for (String s:splitThesaurusWords(word1.getAntonyms())) {
-			if (s.equals(word2)) {
+			if (s.equals(word2.toString())) {
 				return true;
 			}
 		}
 		for (String s:splitThesaurusWords(word2.getAntonyms())) {
-			if (s.equals(word1)) {
+			if (s.equals(word1.toString())) {
 				return true;
 			}
 		}
@@ -409,8 +409,8 @@ public class WordProcessing {
 
 	/**
 	 * Checks to see if two words share any synonyms
-	 * @param word1
-	 * @param word2
+	 * @param word1 to compare
+	 * @param word2 to compare
 	 * @return The # of shared synonyms
 	 */
 	public static int checkSynonymSimilarities(Word word1, Word word2){
@@ -438,8 +438,8 @@ public class WordProcessing {
 
 	/**
 	 * Checks to see if two words share any antonyms
-	 * @param word1
-	 * @param word2
+	 * @param word1 to compare
+	 * @param word2 to compare
 	 * @return The # of shared antonyms
 	 */
 	public static int checkAntonymSimilarities(Word word1, Word word2){
@@ -467,9 +467,9 @@ public class WordProcessing {
 	}
 
 	/**
-	 * Splits the words in input linkedlist by spaces, meaning that 
-	 * each item in the returned linkedlist is one word.
-	 * @param list
+	 * Splits the words in input LinkedList by spaces, meaning that
+	 * each item in the returned LinkedList is one word.
+	 * @param list to convert
 	 * @return cleaned and formatted list. Each object is a single word with no spaces
 	 */
 	private static ArrayList<String> splitThesaurusWords(LinkedList<String> list){
@@ -485,8 +485,8 @@ public class WordProcessing {
 
 	/**
 	 * Finds the number of shared words in their examples
-	 * @param word1
-	 * @param word2
+	 * @param word1 to compare
+	 * @param word2 to compare
 	 * @return number of similarities
 	 */
 	private static int checkExampleSimilarities(Word word1, Word word2){
@@ -511,7 +511,7 @@ public class WordProcessing {
 
 	/**
 	 * Splits the example up by spaces and cleans the input
-	 * @param example
+	 * @param example to split
 	 * @return ArrayList of words in the example sentence.
 	 */
 	private static ArrayList<String> splitExampleWords(String example){
