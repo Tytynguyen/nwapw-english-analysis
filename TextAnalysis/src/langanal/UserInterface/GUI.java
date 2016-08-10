@@ -18,9 +18,8 @@ public class GUI extends JPanel implements ActionListener {
     //youtube vid for multithreading: https://www.youtube.com/watch?v=X5Q-Mecu_64
 
 
-    public String text1;
-    public String text2;
-    public float relevancy;
+    private Sentence sentence1;
+    private Sentence sentence2;
 
     public JFrame errMsg;//frame for error mesage dialogue
     public JLabel instructions;//how to operate the application
@@ -47,7 +46,7 @@ public class GUI extends JPanel implements ActionListener {
         Color smokeWhite = new Color(245,245,245);
 
         instructions = new JLabel("This application determines the relevancy of two texts. " +
-                "Please enter two texts in the two fields below");
+                "Please enter two English texts in the two fields below");
         c.gridx = 0;
         c.gridy = 0;
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -106,7 +105,11 @@ public class GUI extends JPanel implements ActionListener {
      * @return feedback string is given
      */
     private String TextOut(float relevancy){
-        return "" + relevancy;
+        return " The two texts scored a " + relevancy + "% relevancy rating" +
+                "\n Relevancy is determined by how much in common the words in the sentences possess" +
+                "\n English aspects such as definitions, synonyms, antonyms, and part of speech" +
+                "\n are weighted in the process" +
+                "\n The higher the relevancy rating, the more the two will have in common";
     }
 
     /**
@@ -123,6 +126,7 @@ public class GUI extends JPanel implements ActionListener {
         frame.setVisible(true);
     }
 
+    //defimes the error dialogue to pop up when the following error occurs
     public void errorDialogue(){
         JOptionPane.showMessageDialog(errMsg, "Please check your spelling. \n" +
                 "       If error reoccures, " +
@@ -134,19 +138,27 @@ public class GUI extends JPanel implements ActionListener {
      * @param e listens for the button "trigger" to be clicked
      */
     public void actionPerformed(ActionEvent e){
-        progress.setIndeterminate(true);
-        feedback.setText("");
         if(!inTA1.getText().equals("") && !inTA2.getText().equals("")){
-            text1 = inTA1.getText();
-            text2 = inTA2.getText();
-            this.relevancy = SentenceProcessing.calcRelevancy(new Sentence(text1),new Sentence(text2));
-            progress.setIndeterminate(false);
-            feedback.setText(TextOut(relevancy));
+            progress.setIndeterminate(true);
+            feedback.setText("");
+            process.start();
         }else{
             feedback.setText(" Please enter text in the two text fields above before pressing \"Compute\"");
-            progress.setIndeterminate(false);
         }
     }
+
+    /**
+     * this thread runs seperate from the GUI to do all the processing so the GUI does not freeze up
+     */
+    Thread process = new Thread(){
+        public void run(){
+            sentence1 = new Sentence(inTA1.getText());
+            sentence2 = new Sentence(inTA2.getText());
+            float relevancy = SentenceProcessing.calcRelevancy(sentence1, sentence2);
+            feedback.setText(TextOut(relevancy));
+            progress.setIndeterminate(false);
+        }
+    };
 
     /**
      * runs the applet
