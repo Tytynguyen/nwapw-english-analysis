@@ -1,13 +1,10 @@
 package langanal.owl.implementation;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.PriorityQueue;
 
 import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 
 public class OWLFinder {
 	public class OWLGraphNode implements Comparable<OWLGraphNode> {
