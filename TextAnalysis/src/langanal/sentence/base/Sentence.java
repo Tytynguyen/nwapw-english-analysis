@@ -19,8 +19,8 @@ public class Sentence {
 	LinkedList<VerbPhrase> verbs = new LinkedList<>();
 	LinkedList<LinkedList<Word>> words = new LinkedList<>();
 	
-	public LinkedList<NounPhrase> getNouns(){return nouns;};
-	public LinkedList<VerbPhrase> getVerbs(){return verbs;};
+	public LinkedList<NounPhrase> getNouns(){return nouns;}
+	public LinkedList<VerbPhrase> getVerbs(){return verbs;}
 	public LinkedList<LinkedList<Word>> getWords(){return words;}
 
 	/*
@@ -69,7 +69,7 @@ public class Sentence {
 			//find verbs
 			if(nlpPOStoPOS(indexedWord.get(PartOfSpeechAnnotation.class)).equals("verb")){
 				//add to verb list
-				verbs.add(new VerbPhrase(indexedWord,new LinkedList<>()));
+				verbs.add(new VerbPhrase(indexedWord,new LinkedList<>(),this));
 				LinkedList<TypedDependency> toCheck = new LinkedList<>();
 				
 				for(TypedDependency dependency : dependencies){
@@ -100,7 +100,7 @@ public class Sentence {
 				}
 			} else if(nlpPOStoPOS(indexedWord.get(PartOfSpeechAnnotation.class)).equals("noun")){
 				//add to noun list
-				nouns.add(new NounPhrase(indexedWord,new LinkedList<>()));
+				nouns.add(new NounPhrase(indexedWord,new LinkedList<>(),this));
 				LinkedList<TypedDependency> toCheck = new LinkedList<>();
 				
 				for(TypedDependency dependency : dependencies){
