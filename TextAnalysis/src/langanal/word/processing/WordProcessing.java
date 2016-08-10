@@ -43,11 +43,13 @@ public class WordProcessing {
 			 * Plots the rough weighted data from before on a sigmoid function.
 			 * This is used to transfer the earlier rough numbers into a percentage number
 			 */
-			relevancy = (float) (200*(1/(1+Math.pow(Math.E,-(relevancy/5)))-0.5));
+			//relevancy = (float) (200*(1/(1+Math.pow(Math.E,-(relevancy/5)))-0.5));
+			relevancy = (float) Math.min(100,Math.pow(relevancy, 2)/25f);
 		
 		}else{
 			System.err.println("ERROR: One of the words was not found in the dictionary or thesaurus. Check your spelling.");
 		}
+		System.out.println(relevancy + " " + allWord1.getFirst().getValue() + " " + allWord2.getFirst().getValue());
 		return relevancy;
 
 	}

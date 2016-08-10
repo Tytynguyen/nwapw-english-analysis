@@ -69,7 +69,7 @@ public class Sentence {
 			//find verbs
 			if(nlpPOStoPOS(indexedWord.get(PartOfSpeechAnnotation.class)).equals("verb")){
 				//add to verb list
-				verbs.add(new VerbPhrase(indexedWord,new LinkedList<>()));
+				verbs.add(new VerbPhrase(indexedWord,new LinkedList<>(),this));
 				LinkedList<TypedDependency> toCheck = new LinkedList<>();
 				
 				for(TypedDependency dependency : dependencies){
@@ -100,7 +100,7 @@ public class Sentence {
 				}
 			} else if(nlpPOStoPOS(indexedWord.get(PartOfSpeechAnnotation.class)).equals("noun")){
 				//add to noun list
-				nouns.add(new NounPhrase(indexedWord,new LinkedList<>()));
+				nouns.add(new NounPhrase(indexedWord,new LinkedList<>(),this));
 				LinkedList<TypedDependency> toCheck = new LinkedList<>();
 				
 				for(TypedDependency dependency : dependencies){
