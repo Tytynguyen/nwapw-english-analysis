@@ -1,5 +1,7 @@
 package langanal.word.processing;
 
+import langanal.word.base.Word;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
