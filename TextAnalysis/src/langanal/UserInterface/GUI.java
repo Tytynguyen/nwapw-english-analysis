@@ -129,7 +129,7 @@ public class GUI extends JPanel implements ActionListener {
     //defimes the error dialogue to pop up when the following error occurs
     public void errorDialogue(){
         JOptionPane.showMessageDialog(errMsg, "Please check your spelling. \n" +
-                "       If error reoccures, " +
+                "       If error reoccurs, " +
                 "then a word you are using is not" +
                 "        in our dictionary", "Dictionary Error", JOptionPane.ERROR_MESSAGE);
     }
