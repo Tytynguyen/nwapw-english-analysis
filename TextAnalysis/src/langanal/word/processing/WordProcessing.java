@@ -1,6 +1,7 @@
 package langanal.word.processing;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.HashMap;
 import java.util.regex.Pattern;
@@ -17,12 +18,18 @@ public class WordProcessing {
 	public static float synonymWeight = 2;
 	public static float antonymWeight = 2;
 	public static float exampleWeight = 3;
-	public static float synonymDefWeight = 0;
-	public static float antonymDefWeight = 0;
+	public static float synonymDefWeight = 0.5f;
+	public static float antonymDefWeight = 0.5f;
 	public static float defDefWeight = 1;
+	public static float isSynWeight = 1;
+	public static float isAntWeight = 1;
 
 	//compiling the regular expression so it doesn't have to be recompiled every time in definitionToWords
 	private static Pattern alphabetic = Pattern.compile("[^a-zA-Z ]");
+	//number of functions being used to calculate relevancy
+	//needed for other equations
+	private static int numFunctions = 7;
+
 
 	//debugging
 	private static int increment;
@@ -56,6 +63,8 @@ public class WordProcessing {
 			float synonymDefTValue = 0;
 			float antonymDefTValue = 0;
 			float defDefTValue = 0;
+			float isSynTValue = 0;
+			float isAntTValue = 0;
 		
 		
 		//Stores the words with the same spelling into one LinkedList
@@ -76,10 +85,10 @@ public class WordProcessing {
 					float exampleValue = checkExampleSimilarities(curWord1, curWord2)*exampleWeight;
 					float synonymDefValue = checkSynonymDefinitionSimilarities(curWord1, curWord2)*synonymDefWeight;
 					float antonymDefValue = checkAntonymDefinitionSimilarities(curWord1, curWord2)*antonymDefWeight;
-					//float synonymDefValue = 0;
-					//float antonymDefValue = 0;
 					float defDefValue = checkDefinitionsDefinitions(curWord1, curWord2)*defDefWeight;
-					//float defDefValue = 0;
+					//casting it to an int from a boolean
+					float isSynValue = (checkSynonyms(curWord1, curWord2)) ? 1:0 * isSynWeight;
+					float isAntValue = (checkAntonyms(curWord1, curWord2)) ? 1:0 * isAntWeight;
 
 					if(debugging){
 						System.out.println("Compare:");
@@ -91,6 +100,8 @@ public class WordProcessing {
 						System.out.println("\tsynDef: " + synonymDefValue);
 						System.out.println("\tantDef: " + antonymDefValue);
 						System.out.println("\tdefDef: " + defDefValue);
+						System.out.println("\tisSyn: " + isSynValue);
+						System.out.println("\tisAnt: " + isAntValue);
 						
 						definitiontValue += definitionValue;
 						POStValue += POSValue;
@@ -100,10 +111,13 @@ public class WordProcessing {
 						synonymDefTValue += synonymValue;
 						antonymDefTValue += antonymDefValue;
 						defDefTValue += defDefValue;
+						isSynTValue += isSynValue;
+						isAntTValue += isAntValue;
 
 					}
 
-					relevancy += (definitionValue + POSValue + synonymValue + antonymValue + synonymDefValue + antonymDefValue + defDefValue)/5;
+					relevancy += (definitionValue + POSValue + synonymValue + antonymValue + synonymDefValue +
+							antonymDefValue + defDefValue + isSynValue + isAntValue)/numFunctions;
 
 				}
 			}
@@ -117,6 +131,8 @@ public class WordProcessing {
 				System.out.println("\tsynDT: " + synonymDefTValue);
 				System.out.println("\tantDT: " + antonymDefTValue);
 				System.out.println("\tdDT: " + defDefTValue);
+				System.out.println("\tisS: " + isSynTValue);
+				System.out.println("\tisT: " + isAntTValue);
 
 				System.out.println("\tTotal rel: " + relevancy);
 			}
@@ -124,7 +140,7 @@ public class WordProcessing {
 			 * Plots the rough weighted data from before on a sigmoid function.
 			 * This is used to transfer the earlier rough numbers into a percentage number
 			 */
-			relevancy = (float) (200*(1/(1+Math.pow(Math.E,-(relevancy/5)))-0.5));
+			relevancy = (float) (200*(1/(1+Math.pow(Math.E,-(relevancy/numFunctions)))-0.5));
 		}else{
 			if(allWord1.size() == 0){
 				System.err.println("ERROR: Word \"" + word1 + "\" was not found in the dictionary or thesaurus. Check your spelling.");
@@ -157,18 +173,14 @@ public class WordProcessing {
 		//Fills definitionWords1
 		for(String fullDefW1 : word1.getDefinitions()){
 			ArrayList<String> defWordList1 = definitionToWords(fullDefW1);
-			for(String curWord : defWordList1){
-				definitionWords1.add(curWord);
-			}
+			definitionWords1.addAll(defWordList1);
 		}
 
 		//Fills definitionWords2
 		for(String fullDefW2 : word2.getDefinitions()){
 			ArrayList<String> defWordList2 = definitionToWords(fullDefW2);
 
-			for(String curWord : defWordList2){
-				definitionWords2.add(curWord);
-			}
+			definitionWords2.addAll(defWordList2);
 		}
 
 		//Checks for repetitions
@@ -193,11 +205,13 @@ public class WordProcessing {
 	 *
 	 * @param word1 to compare
 	 * @param word2 to compare
-	 * @return //TODO will be filled in after being normalized
+	 * @return average number of similarities between any two nouns or verbs in the definitions of word1 and word2
 	 */
-	public static int checkDefinitionsDefinitions(Word word1, Word word2) {
+	public static float checkDefinitionsDefinitions(Word word1, Word word2) {
 
 		int relevancy = 0;
+		//stores total number of entries checked
+		int count = 0;
 
 		//though using the string is less accurate, it's much faster
 		HashMap<String,Word> ignore = new HashMap<String,Word>();
@@ -251,11 +265,21 @@ public class WordProcessing {
 		for (Word currentWord1:h1.keySet()) {
 			for (Word currentWord2:h2.keySet()) {
 				//System.out.println("\t\t\t" + currentWord1 + "\t\t" + currentWord2);
+				//relevancy += similarity of the definitions of the two current words...
+				// ...times the number of times those two words are in the definitions
 				relevancy += (checkDefinitionSimilarities(currentWord1,currentWord2) * h1.get(currentWord1) *h2.get(currentWord2));
+				count++;
 			}
 		}
 
-		return relevancy;
+		//return the average relevancy for comparing two words
+
+		if (count == 0) {
+			//escape case if it ran no times
+			return 0;
+		} else {
+			return (float) relevancy / (float) count;
+		}
 	}
 
 	/**
@@ -264,23 +288,31 @@ public class WordProcessing {
 	 *
 	 * @param word1 to compare
 	 * @param word2 to compare
-	 * @return //TODO will be filled in after normalized
+	 * @return average number of similarities between any two nouns or verbs in the definitions of synonyms of word1 and word2
 	 */
-	private static int checkSynonymDefinitionSimilarities(Word word1, Word word2) {
+	private static float checkSynonymDefinitionSimilarities(Word word1, Word word2) {
 
 		int similarity = 0;
+		//stores total number of entries checked
+		int count = 0;
 
 		for (String s1:splitThesaurusWords(word1.getSynonyms())) {
 			for (String s2 : splitThesaurusWords(word2.getSynonyms())) {
 				for (Word w1 : WordInfo.getDictionaryWords(s1)) {
 					for (Word w2 : WordInfo.getDictionaryWords(s2)) {
 						similarity += checkDefinitionSimilarities(w1, w2);
+						count++;
 					}
 				}
 			}
 		}
 
-		return similarity;
+		if (count == 0) {
+			//escape case if it ran no times
+			return 0;
+		} else {
+			return (float) similarity / (float) count;
+		}
 	}
 
 
@@ -290,23 +322,31 @@ public class WordProcessing {
 	 *
 	 * @param word1 to compare
 	 * @param word2 to compare
-	 * @return //TODO will be filled in after normalized
+	 * @return average number of similarities between any two nouns or verbs in the definitions of antonyms of word1 and word2
 	 */
-	private static int checkAntonymDefinitionSimilarities(Word word1, Word word2) {
+	private static float checkAntonymDefinitionSimilarities(Word word1, Word word2) {
 
 		int similarity = 0;
+		//stores total number of entries checked
+		int count = 0;
 
 		for (String s1 : splitThesaurusWords(word1.getAntonyms())) {
 			for (String s2 : splitThesaurusWords(word2.getAntonyms())) {
 				for (Word w1 : WordInfo.getDictionaryWords(s1)) {
 					for (Word w2 : WordInfo.getDictionaryWords(s2)) {
 						similarity += checkDefinitionSimilarities(w1, w2);
+						count++;
 					}
 				}
 			}
 		}
 
-		return similarity;
+		if (count == 0) {
+			//escape case if it ran no times
+			return 0;
+		} else {
+			return (float) similarity / (float) count;
+		}
 	}
 
 
@@ -419,12 +459,8 @@ public class WordProcessing {
 
 		int repeatedSynonyms = 0; //holds the # of repeated pairs of similarity words
 
-		for(String s : splitThesaurusWords(word1.getSynonyms())){
-			synonymsWord1.add(s);
-		}
-		for(String s : splitThesaurusWords(word2.getSynonyms())){
-			synonymsWord2.add(s);
-		}
+		synonymsWord1.addAll(splitThesaurusWords(word1.getSynonyms()));
+		synonymsWord2.addAll(splitThesaurusWords(word2.getSynonyms()));
 
 		for(String curSynonymWord1 : synonymsWord1){
 			for(String curSynonymWord2 : synonymsWord2) {
@@ -448,12 +484,8 @@ public class WordProcessing {
 
 		int repeatedAntonyms = 0; //holds the # of repeated pairs of similarity words
 
-		for(String s : splitThesaurusWords(word1.getAntonyms())){
-			antonymsWord1.add(s);
-		}
-		for(String s : splitThesaurusWords(word2.getAntonyms())){
-			antonymsWord2.add(s);
-		}
+		antonymsWord1.addAll(splitThesaurusWords(word1.getAntonyms()));
+		antonymsWord2.addAll(splitThesaurusWords(word2.getAntonyms()));
 
 		for(String curWord1 : antonymsWord1){
 			for(String curWord2 : antonymsWord2) {
@@ -476,9 +508,7 @@ public class WordProcessing {
 		ArrayList<String> returnList = new ArrayList<String>();
 
 		for(String s : list){
-			for(String x : s.split(" ")){
-				returnList.add(x);
-			}
+			Collections.addAll(returnList, s.split(" "));
 		}
 		return returnList;
 	}
