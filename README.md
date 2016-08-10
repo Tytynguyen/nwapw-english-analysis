@@ -5,7 +5,7 @@
 
 This project relies on multiple libraries with series of dependencies. Though not required, using [Apache Maven](https://maven.apache.org) to install the required dependencies is highly recommended. Simply [follow the install instructions](https://maven.apache.org/install.html) (Homebrew can also be used on OS X with the command `brew install maven`), then navigate to the TextAnalysis directory and execute the command `mvn clean install`.
 
-If you choose to manually install the required dependencies, the dependency tree is a follows.
+If you choose to manually install the required dependencies, the dependency tree is as follows.
 
 ```
 net.sourceforge.owlapi:owlapi-distribution:4.2.4
