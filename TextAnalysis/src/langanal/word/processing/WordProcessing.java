@@ -87,8 +87,8 @@ public class WordProcessing {
 					float antonymDefValue = checkAntonymDefinitionSimilarities(curWord1, curWord2)*antonymDefWeight;
 					float defDefValue = checkDefinitionsDefinitions(curWord1, curWord2)*defDefWeight;
 					//casting it to an int from a boolean
-					float isSynValue = (checkSynonyms(curWord1, curWord2)) ? 1:0 * isSynWeight;
-					float isAntValue = (checkAntonyms(curWord1, curWord2)) ? 1:0 * isAntWeight;
+					float isSynValue = (checkIfSynonyms(curWord1, curWord2)) ? 1:0 * isSynWeight;
+					float isAntValue = (checkIfAntonyms(curWord1, curWord2)) ? 1:0 * isAntWeight;
 
 					if(debugging){
 						System.out.println("Compare:");
@@ -188,7 +188,6 @@ public class WordProcessing {
 			for(String checkingWord : definitionWords2){
 				if(persistWord.equals(checkingWord)){
 					if(!isCommonWord(persistWord)){
-						System.out.println("\t\t def: " + persistWord);
 						definitionRepeats++;
 					}
 				}
@@ -264,7 +263,6 @@ public class WordProcessing {
 
 		for (Word currentWord1:h1.keySet()) {
 			for (Word currentWord2:h2.keySet()) {
-				//System.out.println("\t\t\t" + currentWord1 + "\t\t" + currentWord2);
 				//relevancy += similarity of the definitions of the two current words...
 				// ...times the number of times those two words are in the definitions
 				relevancy += (checkDefinitionSimilarities(currentWord1,currentWord2) * h1.get(currentWord1) *h2.get(currentWord2));
@@ -360,7 +358,6 @@ public class WordProcessing {
 
 		ArrayList<String> returnList = new ArrayList<String>();
 
-		increment++;
 		//removes non-alphabetic characters, makes lower case, trims starting and ending whitespace, then splits by spaces
 		for(String word : alphabetic.matcher(definition).replaceAll("").toLowerCase().trim().split(" ")){
 			returnList.add(word.trim());
@@ -408,7 +405,7 @@ public class WordProcessing {
 	 * @param word2 to compare
 	 * @return if they're synonyms
 	 */
-	public static boolean checkSynonyms(Word word1, Word word2) {
+	public static boolean checkIfSynonyms(Word word1, Word word2) {
 
 		for (String s:splitThesaurusWords(word1.getSynonyms())) {
 			if (s.equals(word2.toString())) {
@@ -429,7 +426,7 @@ public class WordProcessing {
 	 * @param word2 to compare
 	 * @return if they're antonyms
 	 */
-	public static boolean checkAntonyms(Word word1, Word word2) {
+	public static boolean checkIfAntonyms(Word word1, Word word2) {
 
 		for (String s:splitThesaurusWords(word1.getAntonyms())) {
 			if (s.equals(word2.toString())) {
