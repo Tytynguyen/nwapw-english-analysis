@@ -1,12 +1,24 @@
 package langanal.word.base;
 
 import javax.json.*;
+
+import langanal.word.base.Word;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+
 import java.io.InputStream;
 import java.net.URL;
 import java.util.LinkedList;
 import langanal.UserInterface.GUI;
 
 public class WordInfo {
+
+	//key is word in String form, value is all Words returned
+	private static HashMap<String,LinkedList<Word>> storedDefinitions = new HashMap<String,LinkedList<Word>>();
+	//key is a given word, value is [synonyms,antonyms]
+	private static HashMap<String,LinkedList<Word>> storedThesaurus = new HashMap<String,LinkedList<Word>>();
+
 	private static final String thesaurusApiKey = "Jcglr2EapVZhu3ucPZsc"; //Api key used for online thesaurus resource
 
 	/*
@@ -33,6 +45,11 @@ public class WordInfo {
 	 * @param Word to find dictionary entries for
 	 */
 	public static LinkedList<Word> getDictionaryWords(String word) {
+
+		if (storedDefinitions.containsKey(word)) {
+			return storedDefinitions.get(word);
+		}
+
 		LinkedList<Word> words = new LinkedList<>();
 
 		//Receiving info from server
@@ -103,18 +120,27 @@ public class WordInfo {
 			GUI error = new GUI();
 			error.errorDialogue();
 		}
+
+		storedDefinitions.put(word,words);
+
 		return words;
 	}
 
 	//adds synonyms and antonyms for all words inputted
+	//each word has the same string but not same definition
+	//for example: would take "apple" with apple computer and apple fruit as definition but not "apple" and "orange"
 	private static void addThesaurusInfo(LinkedList<Word> words){
+
+		//if we've already stored it, set words to be that
+		if (storedThesaurus.containsKey(words.getFirst().getValue())) {
+			words = storedThesaurus.get(words.getFirst().getValue());
+		}
 
 		//Receiving info from server
 		URL url = null;
 		try {
 			url = new URL("http://thesaurus.altervista.org/thesaurus/v1?output=json&language=en_US&key="+thesaurusApiKey+"&word="+words.getFirst().getValue());
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
+		} catch (MalformedURLException e1) {
 			e1.printStackTrace();
 		}
 		try(InputStream in = url.openStream();
@@ -158,5 +184,8 @@ public class WordInfo {
 		} catch (Exception e){
 			e.printStackTrace();
 		}
+
+		//store it in case it gets called again
+		storedThesaurus.put(words.getFirst().getValue(),words);
 	}
 }
