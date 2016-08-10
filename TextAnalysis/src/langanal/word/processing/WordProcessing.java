@@ -45,7 +45,7 @@ public class WordProcessing {
 
 	/**
 	 * Compares, processes, and returns the relevancy of the two words
-	 * 
+	 *
 	 * @param word1 to compare
 	 * @param word2 to compare
 	 * @return The % relevancy
@@ -67,8 +67,8 @@ public class WordProcessing {
 			float defDefTValue = 0;
 			float isSynTValue = 0;
 			float isAntTValue = 0;
-		
-		
+
+
 		//Stores the words with the same spelling into one LinkedList
 		LinkedList<Word> allWord1 = new LinkedList<Word>();
 		LinkedList<Word> allWord2 = new LinkedList<Word>();
@@ -104,7 +104,7 @@ public class WordProcessing {
 						System.out.println("\tdefDef: " + defDefValue);
 						System.out.println("\tisSyn: " + isSynValue);
 						System.out.println("\tisAnt: " + isAntValue);
-						
+
 						definitiontValue += definitionValue;
 						POStValue += POSValue;
 						synonymtValue += synonymValue;
@@ -142,7 +142,8 @@ public class WordProcessing {
 			 * Plots the rough weighted data from before on a sigmoid function.
 			 * This is used to transfer the earlier rough numbers into a percentage number
 			 */
-			relevancy = (float) (200*(1/(1+Math.pow(Math.E,-(relevancy/numFunctions)))-0.5));
+			//relevancy = (float) (200*(1/(1+Math.pow(Math.E,-(relevancy/5)))-0.5));
+			relevancy = (float) Math.min(100,Math.pow(relevancy, 2)/25f);
 		}else{
 			if(allWord1.size() == 0){
 				System.err.println("ERROR: Word \"" + word1 + "\" was not found in the dictionary or thesaurus. Check your spelling.");
@@ -161,7 +162,7 @@ public class WordProcessing {
 	}
 	/**
 	 * Counts the repetition of words in each definition
-	 * 
+	 *
 	 * @param word1 to compare
 	 * @param word2 compare
 	 * @return The number of repetitions
@@ -369,7 +370,7 @@ public class WordProcessing {
 
 	/**
 	 * Determines whether the inputted word is a common one
-	 * 
+	 *
 	 * @param word to test
 	 * @return Boolean whether the inputted word is a common word
 	 */
@@ -386,7 +387,7 @@ public class WordProcessing {
 
 	/**
 	 * Checks to see if the POS is the same between two words
-	 * 
+	 *
 	 * @param word1 to compare
 	 * @param word2 to compare
 	 * @return 1 if they share the same POS, 0 if they do not share the same POS
