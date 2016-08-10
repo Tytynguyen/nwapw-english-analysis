@@ -1,5 +1,6 @@
 package langanal.word.processing;
 
+import langanal.owl.implementation.OWLOntologyUsage;
 import langanal.word.base.Word;
 
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ public class WordProcessing {
 	public static float POSWeight = 0.2f;
 	public static float synonymWeight = 1;
 	public static float antonymWeight = 1;
+	public static float ontologyWeight = 4;
 
 	private static String[] commonWords = 
 			new String[]{
@@ -39,6 +41,14 @@ public class WordProcessing {
 					relevancy += (definitionValue + POSValue + synonymValue + antonymValue);
 				}
 			}
+			
+			//TODO checkOntologySeparation returns the degree of separation, EX: 1 for first removed, 2 is less relevant, etc
+			//Since 1 degree of separation is more relevant than 3 degrees, we need to weight lower number HIGHER than 
+			//the higher degrees of separation. I don't currently use this
+			float separationValue = checkOntologySeparation(allWord1.getFirst(),allWord2.getFirst())*ontologyWeight;
+			System.out.println("value: " + separationValue);
+			relevancy+=separationValue;
+			
 			/*
 			 * Plots the rough weighted data from before on a sigmoid function.
 			 * This is used to transfer the earlier rough numbers into a percentage number
@@ -220,5 +230,16 @@ public class WordProcessing {
 			}
 		}
 		return returnList;
+	}
+	
+	/**
+	 * Finds the degree of separation using ontologies
+	 * @param word1
+	 * @param word2
+	 * @return int degree of separation
+	 */
+	private static int checkOntologySeparation(Word word1, Word word2){
+		System.out.println("starting");
+		return OWLOntologyUsage.degreesOfSeparation(word1.getValue(), word2.getValue());
 	}
 }
