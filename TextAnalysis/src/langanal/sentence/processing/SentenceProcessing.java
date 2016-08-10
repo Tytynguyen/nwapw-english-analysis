@@ -19,9 +19,15 @@ public class SentenceProcessing {
 	public static float calcRelevancy(Sentence sen1, Sentence sen2){
 		float noun = compareNounPhrases(sen1.getNouns(),sen2.getNouns());
 		float verb = compareVerbPhrases(sen1.getVerbs(),sen2.getVerbs());
-		return verb*0.35f + noun*.65f;
+		if(verb==-1 && noun!=-1){
+			return noun;
+		} else if(verb!=-1 && noun==-1){
+			return verb;
+		}else{
+			return verb*0.35f + noun*.65f;
+		}
 	}
-	
+
 
 	/**
 	 * @param vl1 First List of VerbPhrases to compare
@@ -111,10 +117,13 @@ public class SentenceProcessing {
 		if (debugging) {
 			System.out.println("Verb Average " + verbComparisonsAvg / verbTotalComparisons);
 		}
+		if(verbTotalComparisons<1){
+			return -1;
+		}
 		return verbComparisonsAvg/verbTotalComparisons;
 	}
-	
-	
+
+
 	/**
 	 * @param nl1 First list of NounPhrases to compare
 	 * @param nl2 Second list of NounPhrases to compare
@@ -199,8 +208,12 @@ public class SentenceProcessing {
 				nounTotalComparisons++;
 			}
 		}
+
 		if (debugging) {
 			System.out.println("Noun Average " + nounComparisonsAvg / nounTotalComparisons);
+		}
+		if(nounTotalComparisons<1){
+			return -1;
 		}
 		return nounComparisonsAvg/nounTotalComparisons;
 	}
