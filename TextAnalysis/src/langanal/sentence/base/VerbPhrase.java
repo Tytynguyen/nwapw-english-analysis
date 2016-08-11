@@ -73,4 +73,8 @@ public class VerbPhrase {
 	public void setBestComparison(float bestComp){
 		this.bestComparison = bestComp;
 	}
+	
+	public IndexedWord getIndexedWord(){
+		return verb;
+	}
 }
