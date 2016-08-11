@@ -146,7 +146,7 @@ public class GUI extends JPanel implements ActionListener {
         if(!inTA1.getText().equals("") && !inTA2.getText().equals("")){
             progress.setIndeterminate(true);
             feedback.setText("");
-            process.start();
+            process.run();
         }else{
             feedback.setText(" Please enter text in the two text fields above before pressing \"Compute\"");
         }
