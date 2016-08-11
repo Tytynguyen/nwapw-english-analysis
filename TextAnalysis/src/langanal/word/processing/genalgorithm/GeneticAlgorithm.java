@@ -55,7 +55,7 @@ public class GeneticAlgorithm {
 		this.currentPopulation = new ArrayList<WeightChrom>(popSize);
 		for(int ind = 0;ind<popSize;ind++){
 			//Adds a chrom to the population with random weights
-			currentPopulation.add(ind, new WeightChrom(ind,rand.nextFloat()*multiplier,rand.nextFloat()*multiplier,rand.nextFloat()*multiplier,rand.nextFloat()*multiplier));
+			currentPopulation.add(ind, new WeightChrom(ind));
 		}
 		return this.currentPopulation;
 	}
@@ -85,22 +85,20 @@ public class GeneticAlgorithm {
 
 				//Chrom1
 					float chromRoulette1 = rand.nextFloat();
-					WeightChrom chrom1 = new WeightChrom(newPop,currentPopulation.get(0).getDefWeight(),currentPopulation.get(0).getPOSWeight(),
-							currentPopulation.get(0).getSynWeight(),currentPopulation.get(0).getAntWeight());
+					WeightChrom chrom1 = new WeightChrom(newPop,currentPopulation.get(0));
 					for(WeightChrom cur : currentPopulation){
 						if(cur.relFitness < chromRoulette1){
-							chrom1 = new WeightChrom(newPop,cur.getDefWeight(),cur.getPOSWeight(),cur.getSynWeight(),cur.getAntWeight());
+							chrom1 = new WeightChrom(newPop,cur);
 						}
 					}
 
 
 					//chrom2
 					float chromRoulette2 = rand.nextFloat();
-					WeightChrom chrom2 = new WeightChrom(newPop+1,currentPopulation.get(0).getDefWeight(),currentPopulation.get(0).getPOSWeight(),
-							currentPopulation.get(0).getSynWeight(),currentPopulation.get(0).getAntWeight());
+					WeightChrom chrom2 = new WeightChrom(newPop+1,currentPopulation.get(0));
 					for(WeightChrom cur : currentPopulation){
 						if(cur.relFitness < chromRoulette2){
-							chrom2 = new WeightChrom(newPop+1,cur.getDefWeight(),cur.getPOSWeight(),cur.getSynWeight(),cur.getAntWeight());
+							chrom2 = new WeightChrom(newPop+1,cur);
 						}
 					}
 					
@@ -109,7 +107,7 @@ public class GeneticAlgorithm {
 						float chromRoulette3 = rand.nextFloat();
 						for(WeightChrom cur : currentPopulation){
 							if(cur.relFitness < chromRoulette3){
-								chrom2 = new WeightChrom(newPop+1,cur.getDefWeight(),cur.getPOSWeight(),cur.getSynWeight(),cur.getAntWeight());
+								chrom2 = new WeightChrom(newPop+1,cur);
 							}
 						}
 					}
