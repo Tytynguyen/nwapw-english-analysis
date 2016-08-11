@@ -4,6 +4,7 @@ import javax.json.*;
 
 import langanal.word.base.Word;
 
+import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.LinkedList;
 

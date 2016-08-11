@@ -52,7 +52,7 @@ public class SentenceProcessing {
 					}
 					value /= modComparisons;
 					value *= 0.2f; //modifiers weighted 20%
-					value += 0.8f*WordProcessing.compareWords(vp1.getVerb(), vp2.getVerb()); // word wieghted 80%
+					value += 0.8f*WordProcessing.compareWords(vp1.getVerb(), vp2.getVerb()); // word weighted 80%
 				} else {
 					//if no modifiers word weighted 100%
 					value = WordProcessing.compareWords(vp1.getVerb(), vp2.getVerb());
