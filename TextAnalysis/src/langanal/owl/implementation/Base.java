@@ -8,6 +8,7 @@ import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 
 import uk.ac.manchester.cs.owl.owlapi.OWLOntologyManagerImpl;
@@ -23,7 +24,7 @@ public class Base {
 		this.map = new HashMap<String,OWLClass>();
 		
 		try {
-			OWLOntologyManagerImpl OWLM = (OWLOntologyManagerImpl) OWLManager.createOWLOntologyManager();
+			OWLOntologyManager OWLM = OWLManager.createOWLOntologyManager();
 
 			//allows for custom ontology loading
 			if(!filename.equals("")){

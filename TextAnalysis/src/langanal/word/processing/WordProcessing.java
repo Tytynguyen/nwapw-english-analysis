@@ -119,22 +119,14 @@ public class WordProcessing {
 				}
 			}
 
-			float separationValue = (1/checkOntologySeparation(word1,word2))*ontologyWeight;
-			Word verbatimWord1 = null;
-			Word verbatimWord2 = null;
-			for(Word w : allWord1){
-				if(w.getValue().equals(word1)){
-					verbatimWord1 = w;
-				}
-			}
-			for(Word w : allWord1){
-				if(w.getValue().equals(word2)){
-					verbatimWord2 = w;
-				}
-			}
-			//float synonymSeperation = (1/checkBestOntologySynonym(verbatimWord2,verbatimWord2))*ontologySynonymWeight;
-			relevancy+=separationValue;
-
+			
+			float separationValue = checkOntologySeparation(allWord1.getFirst().getValue(),allWord2.getFirst().getValue());
+					if(separationValue>-1){
+						separationValue = (1/separationValue)*ontologyWeight;
+						relevancy+=separationValue;
+					}else{
+						numFunctions--;
+					}
 
 			if(debugging){
 				System.out.println();
