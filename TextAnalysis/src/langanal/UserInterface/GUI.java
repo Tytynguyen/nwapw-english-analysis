@@ -152,11 +152,16 @@ public class GUI extends JPanel implements ActionListener {
      */
     Thread process = new Thread(){
         public void run(){
-            sentence1 = new Sentence(inTA1.getText());
-            sentence2 = new Sentence(inTA2.getText());
-            float relevancy = SentenceProcessing.calcRelevancy(sentence1, sentence2);
-            feedback.setText(TextOut(relevancy));
-            progress.setIndeterminate(false);
+            try{
+                sentence1 = new Sentence(inTA1.getText());
+                sentence2 = new Sentence(inTA2.getText());
+                float relevancy = SentenceProcessing.calcRelevancy(sentence1, sentence2);
+                feedback.setText(TextOut(relevancy));
+                progress.setIndeterminate(false);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
         }
     };
 
