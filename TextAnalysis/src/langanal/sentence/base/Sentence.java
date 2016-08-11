@@ -5,6 +5,7 @@ import edu.stanford.nlp.ling.CoreAnnotations.TextAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.ling.IndexedWord;
+import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.trees.TypedDependency;
 import edu.stanford.nlp.util.CoreMap;
 import langanal.word.base.Word;
@@ -27,9 +28,9 @@ public class Sentence {
 	 * Creates a new Sentence with all data filled in for comparison with other sentences
 	 * @param String inputted to create a sentence of
 	 */
-	public Sentence(String str){
+	public Sentence(String str, StanfordCoreNLP pipeline){
 		//gets nlp CoreMap of sentence, includes all nlp info
-		CoreMap cm = SentenceParser.getCoreMap(str);
+		CoreMap cm = SentenceParser.getCoreMap(str,pipeline);
 		//seperate tagged words
 		List<CoreLabel> tokens = cm.get(TokensAnnotation.class);
 

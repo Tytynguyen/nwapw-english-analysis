@@ -49,8 +49,8 @@ public class WordProcessing {
 	/**
 	 * Compares, processes, and returns the relevancy of the two words
 	 *
-	 * @param word1 to compare
-	 * @param word2 to compare
+	 * @param allWord1 words to compare
+	 * @param allWord2 words to compare
 	 * @return The % relevancy
 	 */
 	public static float compareWords(LinkedList<Word> allWord1, LinkedList<Word> allWord2, String word1, String word2){
@@ -60,16 +60,16 @@ public class WordProcessing {
 		float relevancy = 0;	//in %
 
 
-			float definitiontValue = 0;
-			float POStValue = 0;
-			float synonymtValue = 0;
-			float antonymtValue = 0;
-			float exampletValue = 0;
-			float synonymDefTValue = 0;
-			float antonymDefTValue = 0;
-			float defDefTValue = 0;
-			float isSynTValue = 0;
-			float isAntTValue = 0;
+		float definitiontValue = 0;
+		float POStValue = 0;
+		float synonymtValue = 0;
+		float antonymtValue = 0;
+		float exampletValue = 0;
+		float synonymDefTValue = 0;
+		float antonymDefTValue = 0;
+		float defDefTValue = 0;
+		float isSynTValue = 0;
+		float isAntTValue = 0;
 
 		//Makes sure that the word exists
 		if(allWord1.size() != 0 && allWord2.size() != 0){
@@ -132,7 +132,7 @@ public class WordProcessing {
 					verbatimWord2 = w;
 				}
 			}
-			float synonymSeperation = (1/checkBestOntologySynonym(verbatimWord2,verbatimWord2))*ontologySynonymWeight;
+			//float synonymSeperation = (1/checkBestOntologySynonym(verbatimWord2,verbatimWord2))*ontologySynonymWeight;
 			relevancy+=separationValue;
 
 
@@ -568,7 +568,7 @@ public class WordProcessing {
 		System.out.println(returnList);
 		return returnList;
 	}
-	
+
 	/**
 	 * Finds the degree of separation using ontologies
 	 * @param word1
@@ -579,22 +579,25 @@ public class WordProcessing {
 		System.out.println("starting");
 		return OWLOntologyUsage.degreesOfSeparation(word1, word2);
 	}
-	
+
 	private static int checkBestOntologySynonym(Word word1, Word word2){
-		int shortestConnection = 1000000;
-		for(String synonym: word1.getSynonyms()){
-			int connection = checkOntologySeparation(word2.getValue(),synonym);
-			if(connection<shortestConnection){
-				shortestConnection = connection;
+		if(word1!=null && word2!=null){
+			int shortestConnection = 1000000;
+			for(String synonym: word1.getSynonyms()){
+				int connection = checkOntologySeparation(word2.getValue(),synonym);
+				if(connection<shortestConnection){
+					shortestConnection = connection;
+				}
 			}
-		}
-		
-		for(String synonym: word2.getSynonyms()){
-			int connection = checkOntologySeparation(word1.getValue(),synonym);
-			if(connection<shortestConnection){
-				shortestConnection = connection;
+
+			for(String synonym: word2.getSynonyms()){
+				int connection = checkOntologySeparation(word1.getValue(),synonym);
+				if(connection<shortestConnection){
+					shortestConnection = connection;
+				}
 			}
+			return shortestConnection;
 		}
-		return shortestConnection;
+		return -1;
 	}
 }
