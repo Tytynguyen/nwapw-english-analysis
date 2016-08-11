@@ -1,7 +1,7 @@
 package langanal.UserInterface;
 
-import langanal.sentence.base.Sentence;
-import langanal.sentence.processing.SentenceProcessing;
+import langanal.word.base.WordInfo;
+import langanal.word.processing.WordProcessing;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -17,9 +17,6 @@ public class GUI extends JPanel implements ActionListener {
 
     //youtube vid for multithreading: https://www.youtube.com/watch?v=X5Q-Mecu_64
 
-
-    private Sentence sentence1;
-    private Sentence sentence2;
 
     public JFrame errMsg;//frame for error mesage dialogue
     public JLabel instructions;//how to operate the application
@@ -152,9 +149,7 @@ public class GUI extends JPanel implements ActionListener {
      */
     Thread process = new Thread(){
         public void run(){
-            sentence1 = new Sentence(inTA1.getText());
-            sentence2 = new Sentence(inTA2.getText());
-            float relevancy = SentenceProcessing.calcRelevancy(sentence1, sentence2);
+            float relevancy = WordProcessing.compareWords(WordInfo.getFullInfoWords(inTA1.getText()),WordInfo.getFullInfoWords(inTA2.getText()));
             feedback.setText(TextOut(relevancy));
             progress.setIndeterminate(false);
         }
