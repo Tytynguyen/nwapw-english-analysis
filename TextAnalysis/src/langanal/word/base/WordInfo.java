@@ -35,7 +35,7 @@ public class WordInfo {
 				theWords.add(w);
 			}
 		}
-		addThesaurusInfo(theWords);
+		addThesaurusInfo(theWords, word);
 
 		return words;
 	}
@@ -130,17 +130,17 @@ public class WordInfo {
 	//adds synonyms and antonyms for all words inputted
 	//each word has the same string but not same definition
 	//for example: would take "apple" with apple computer and apple fruit as definition but not "apple" and "orange"
-	private static void addThesaurusInfo(LinkedList<Word> words){
+	private static void addThesaurusInfo(LinkedList<Word> words, String queryWord){
 
 		//if we've already stored it, set words to be that
-		if (storedThesaurus.containsKey(words.getFirst().getValue())) {
-			words = storedThesaurus.get(words.getFirst().getValue());
+		if (storedThesaurus.containsKey(queryWord)) {
+			words = storedThesaurus.get(queryWord);
 		}
 
 		//Receiving info from server
 		URL url = null;
 		try {
-			url = new URL("http://thesaurus.altervista.org/thesaurus/v1?output=json&language=en_US&key="+thesaurusApiKey+"&word="+words.getFirst().getValue());
+			url = new URL("http://thesaurus.altervista.org/thesaurus/v1?output=json&language=en_US&key="+thesaurusApiKey+"&word="+queryWord);
 		} catch (MalformedURLException e1) {
 			e1.printStackTrace();
 		}
