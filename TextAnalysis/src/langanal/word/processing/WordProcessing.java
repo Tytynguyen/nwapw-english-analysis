@@ -48,11 +48,11 @@ public class WordProcessing {
 	/**
 	 * Compares, processes, and returns the relevancy of the two words
 	 *
-	 * @param word1 to compare
-	 * @param word2 to compare
+	 * @param allWord1 words to compare
+	 * @param allWord2 words to compare
 	 * @return The % relevancy
 	 */
-	public static float compareWords(String word1, String word2){
+	public static float compareWords(LinkedList<Word> allWord1, LinkedList<Word> allWord2){
 		//debugging
 		increment = 0;
 
@@ -69,14 +69,6 @@ public class WordProcessing {
 			float defDefTValue = 0;
 			float isSynTValue = 0;
 			float isAntTValue = 0;
-
-
-		//Stores the words with the same spelling into one LinkedList
-		LinkedList<Word> allWord1 = new LinkedList<Word>();
-		LinkedList<Word> allWord2 = new LinkedList<Word>();
-
-		allWord1 = WordInfo.getFullInfoWords(word1);
-		allWord2 = WordInfo.getFullInfoWords(word2);
 
 		//Makes sure that the word exists
 		if(allWord1.size() != 0 && allWord2.size() != 0){
@@ -153,12 +145,7 @@ public class WordProcessing {
 			//relevancy = (float) (200*(1/(1+Math.pow(Math.E,-(relevancy/5)))-0.5));
 			relevancy = (float) Math.min(100,Math.pow(relevancy, 2)/25f);
 		}else{
-			if(allWord1.size() == 0){
-				System.err.println("ERROR: Word \"" + word1 + "\" was not found in the dictionary or thesaurus. Check your spelling.");
-			}
-			if(allWord2.size() == 0){
-				System.err.println("ERROR: Word \"" + word2 + "\" was not found in the dictionary or thesaurus. Check your spelling.");
-			}
+			System.err.println("ERROR: One of the words was not found in the dictionary or thesaurus. Check your spelling.");
 		}
 
 		if (debugging) {
