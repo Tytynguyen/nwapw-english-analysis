@@ -141,7 +141,7 @@ public class WordInfo {
 		URL url = null;
 		try {
 			url = new URL("http://thesaurus.altervista.org/thesaurus/v1?output=json&language=en_US&key="+thesaurusApiKey+"&word="+queryWord);
-		} catch (MalformedURLException e1) {
+		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
 		try(InputStream in = url.openStream();
