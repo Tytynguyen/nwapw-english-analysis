@@ -118,9 +118,15 @@ public class WordProcessing {
 				}
 			}
 
-			float separationValue = (1/checkOntologySeparation(allWord1.getFirst(),allWord2.getFirst()))*ontologyWeight;
-			relevancy+=separationValue;
-
+			
+			float separationValue = checkOntologySeparation(allWord1.getFirst(),allWord2.getFirst());
+					if(separationValue>-1){
+						separationValue = (1/separationValue)*ontologyWeight;
+						relevancy+=separationValue;
+					}else{
+						numFunctions--;
+					}
+					
 
 			if(debugging){
 				System.out.println();
