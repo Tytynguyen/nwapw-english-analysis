@@ -5,10 +5,14 @@ import langanal.sentence.processing.SentenceProcessing;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+
+import edu.stanford.nlp.pipeline.StanfordCoreNLP;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.Properties;
 
 /**
  * Created by SteinJac.ao on 8/1/2016.
@@ -29,6 +33,7 @@ public class GUI extends JPanel implements ActionListener {
     public JTextArea feedback;//an output TextArea for relativity feedback
 
     public JProgressBar progress;
+    private StanfordCoreNLP pipeline;
 
 
     /**
@@ -152,11 +157,23 @@ public class GUI extends JPanel implements ActionListener {
      */
     Thread process = new Thread(){
         public void run(){
-            sentence1 = new Sentence(inTA1.getText());
-            sentence2 = new Sentence(inTA2.getText());
+        	if(pipeline == null){
+        		// creates a StanfordCoreNLP object, with POS tagging, lemmatization, NER, parsing, and coreference
+                Properties props = new Properties();
+                props.put("annotators", "tokenize, ssplit, pos, lemma, ner, parse, dcoref");
+                pipeline = new StanfordCoreNLP(props);
+        	}
+            sentence1 = new Sentence(inTA1.getText(),pipeline);
+            sentence2 = new Sentence(inTA2.getText(),pipeline);
             float relevancy = SentenceProcessing.calcRelevancy(sentence1, sentence2);
             feedback.setText(TextOut(relevancy));
             progress.setIndeterminate(false);
+            try {
+				this.join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
     };
 

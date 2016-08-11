@@ -27,6 +27,7 @@ public class WordProcessing {
 	public static float isSynWeight = 1;
 	public static float isAntWeight = 1;
 	public static float ontologyWeight = 4;
+	public static float ontologySynonymWeight = 5;
 
 	//compiling the regular expression so it doesn't have to be recompiled every time in definitionToWords
 	private static Pattern alphabetic = Pattern.compile("[^a-zA-Z ]");
@@ -52,23 +53,23 @@ public class WordProcessing {
 	 * @param allWord2 words to compare
 	 * @return The % relevancy
 	 */
-	public static float compareWords(LinkedList<Word> allWord1, LinkedList<Word> allWord2){
+	public static float compareWords(LinkedList<Word> allWord1, LinkedList<Word> allWord2, String word1, String word2){
 		//debugging
 		increment = 0;
 
 		float relevancy = 0;	//in %
 
 
-			float definitiontValue = 0;
-			float POStValue = 0;
-			float synonymtValue = 0;
-			float antonymtValue = 0;
-			float exampletValue = 0;
-			float synonymDefTValue = 0;
-			float antonymDefTValue = 0;
-			float defDefTValue = 0;
-			float isSynTValue = 0;
-			float isAntTValue = 0;
+		float definitiontValue = 0;
+		float POStValue = 0;
+		float synonymtValue = 0;
+		float antonymtValue = 0;
+		float exampletValue = 0;
+		float synonymDefTValue = 0;
+		float antonymDefTValue = 0;
+		float defDefTValue = 0;
+		float isSynTValue = 0;
+		float isAntTValue = 0;
 
 		//Makes sure that the word exists
 		if(allWord1.size() != 0 && allWord2.size() != 0){
@@ -119,14 +120,13 @@ public class WordProcessing {
 			}
 
 			
-			float separationValue = checkOntologySeparation(allWord1.getFirst(),allWord2.getFirst());
+			float separationValue = checkOntologySeparation(allWord1.getFirst().getValue(),allWord2.getFirst().getValue());
 					if(separationValue>-1){
 						separationValue = (1/separationValue)*ontologyWeight;
 						relevancy+=separationValue;
 					}else{
 						numFunctions--;
 					}
-					
 
 			if(debugging){
 				System.out.println();
@@ -151,7 +151,9 @@ public class WordProcessing {
 			//relevancy = (float) (200*(1/(1+Math.pow(Math.E,-(relevancy/5)))-0.5));
 			relevancy = (float) Math.min(100,Math.pow(relevancy, 2)/25f);
 		}else{
-			System.err.println("ERROR: One of the words was not found in the dictionary or thesaurus. Check your spelling.");
+			if(allWord1.size() == 0 || allWord2.size() == 0){
+				System.err.println("ERROR: Word was not found in the dictionary or thesaurus. Check your spelling.");
+			}
 		}
 
 		if (debugging) {
@@ -558,15 +560,36 @@ public class WordProcessing {
 		System.out.println(returnList);
 		return returnList;
 	}
-	
+
 	/**
 	 * Finds the degree of separation using ontologies
 	 * @param word1
 	 * @param word2
 	 * @return int degree of separation
 	 */
-	private static int checkOntologySeparation(Word word1, Word word2){
+	private static int checkOntologySeparation(String word1,String word2){
 		System.out.println("starting");
-		return OWLOntologyUsage.degreesOfSeparation(word1.getValue(), word2.getValue());
+		return OWLOntologyUsage.degreesOfSeparation(word1, word2);
+	}
+
+	private static int checkBestOntologySynonym(Word word1, Word word2){
+		if(word1!=null && word2!=null){
+			int shortestConnection = 1000000;
+			for(String synonym: word1.getSynonyms()){
+				int connection = checkOntologySeparation(word2.getValue(),synonym);
+				if(connection<shortestConnection){
+					shortestConnection = connection;
+				}
+			}
+
+			for(String synonym: word2.getSynonyms()){
+				int connection = checkOntologySeparation(word1.getValue(),synonym);
+				if(connection<shortestConnection){
+					shortestConnection = connection;
+				}
+			}
+			return shortestConnection;
+		}
+		return -1;
 	}
 }

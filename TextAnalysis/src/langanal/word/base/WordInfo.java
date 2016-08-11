@@ -187,6 +187,6 @@ public class WordInfo {
 		}
 
 		//store it in case it gets called again
-		storedThesaurus.put(words.getFirst().getValue(),words);
+		storedThesaurus.put(queryWord,words);
 	}
 }

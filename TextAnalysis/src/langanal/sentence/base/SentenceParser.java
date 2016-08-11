@@ -58,11 +58,8 @@ public class SentenceParser {
      * @param sentence to be tagged
      * @return tagged sentence (CoreMap)
      */
-    public static CoreMap getCoreMap(String sentence){
-        // creates a StanfordCoreNLP object, with POS tagging, lemmatization, NER, parsing, and coreference
-        Properties props = new Properties();
-        props.put("annotators", "tokenize, ssplit, pos, lemma, ner, parse, dcoref");
-        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
+    public static CoreMap getCoreMap(String sentence,StanfordCoreNLP pipeline){
+    	
 
         // create an empty Annotation just with the given text
         Annotation document = new Annotation(sentence);
