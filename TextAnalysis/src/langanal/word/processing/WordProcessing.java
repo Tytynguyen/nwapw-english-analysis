@@ -27,6 +27,7 @@ public class WordProcessing {
 	public static float isSynWeight = 1;
 	public static float isAntWeight = 1;
 	public static float ontologyWeight = 4;
+	public static float ontologySynonymWeight = 5;
 
 	//compiling the regular expression so it doesn't have to be recompiled every time in definitionToWords
 	private static Pattern alphabetic = Pattern.compile("[^a-zA-Z ]");
@@ -52,7 +53,7 @@ public class WordProcessing {
 	 * @param word2 to compare
 	 * @return The % relevancy
 	 */
-	public static float compareWords(LinkedList<Word> allWord1, LinkedList<Word> allWord2){
+	public static float compareWords(LinkedList<Word> allWord1, LinkedList<Word> allWord2, String word1, String word2){
 		//debugging
 		increment = 0;
 
@@ -118,7 +119,20 @@ public class WordProcessing {
 				}
 			}
 
-			float separationValue = (1/checkOntologySeparation(allWord1.getFirst(),allWord2.getFirst()))*ontologyWeight;
+			float separationValue = (1/checkOntologySeparation(word1,word2))*ontologyWeight;
+			Word verbatimWord1 = null;
+			Word verbatimWord2 = null;
+			for(Word w : allWord1){
+				if(w.getValue().equals(word1)){
+					verbatimWord1 = w;
+				}
+			}
+			for(Word w : allWord1){
+				if(w.getValue().equals(word2)){
+					verbatimWord2 = w;
+				}
+			}
+			float synonymSeperation = (1/checkBestOntologySynonym(verbatimWord2,verbatimWord2))*ontologySynonymWeight;
 			relevancy+=separationValue;
 
 

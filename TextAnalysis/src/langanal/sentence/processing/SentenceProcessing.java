@@ -46,16 +46,16 @@ public class SentenceProcessing {
 					//calculates modifier relevancy
 					for(LinkedList<Word> mod1 : vp1.getModifiers()){
 						for(LinkedList<Word> mod2 : vp2.getModifiers()){
-							value += WordProcessing.compareWords(mod1,mod2);
+							value += WordProcessing.compareWords(mod1,mod2,"","");
 							modComparisons++;
 						}
 					}
 					value /= modComparisons;
 					value *= 0.2f; //modifiers weighted 20%
-					value += 0.8f*WordProcessing.compareWords(vp1.getVerb(), vp2.getVerb()); // word wieghted 80%
+					value += 0.8f*WordProcessing.compareWords(vp1.getVerb(), vp2.getVerb(),vp1.getIndexedWord().originalText(),vp2.getIndexedWord().originalText()); // word wieghted 80%
 				} else {
 					//if no modifiers word weighted 100%
-					value = WordProcessing.compareWords(vp1.getVerb(), vp2.getVerb());
+					value = WordProcessing.compareWords(vp1.getVerb(), vp2.getVerb(),vp1.getIndexedWord().originalText(),vp2.getIndexedWord().originalText());
 				}
 				//record comparison values
 				vp1.addComparison(value);
@@ -141,16 +141,16 @@ public class SentenceProcessing {
 					//calculates modifier relevancy
 					for(LinkedList<Word> mod1 : np1.getModifiers()){
 						for(LinkedList<Word> mod2 : np2.getModifiers()){
-							value += WordProcessing.compareWords(mod1,mod2);
+							value += WordProcessing.compareWords(mod1,mod2,"","");
 							modComparisons++;
 						}
 					}
 					value /= modComparisons;
 					value *= 0.2f;//modifiers weighted 20%
-					value += 0.8f*WordProcessing.compareWords(np1.getNoun(), np2.getNoun());//word weighted 80%
+					value += 0.8f*WordProcessing.compareWords(np1.getNoun(), np2.getNoun(),np1.getIndexedWord().originalText(),np2.getIndexedWord().originalText());//word weighted 80%
 				} else {
 					//if no modifiers word weighted 100%
-					value = WordProcessing.compareWords(np1.getNoun(), np2.getNoun());
+					value = WordProcessing.compareWords(np1.getNoun(), np2.getNoun(),np1.getIndexedWord().originalText(),np2.getIndexedWord().originalText());
 				}
 				//records comparison values
 				np1.addComparison(value);
