@@ -20,6 +20,7 @@ public class GUI extends JPanel implements ActionListener {
 
     private Sentence sentence1;
     private Sentence sentence2;
+    private float relevancy;
 
     public JFrame errMsg;//frame for error mesage dialogue
     public JLabel instructions;//how to operate the application
@@ -141,7 +142,7 @@ public class GUI extends JPanel implements ActionListener {
         if(!inTA1.getText().equals("") && !inTA2.getText().equals("")){
             progress.setIndeterminate(true);
             feedback.setText("");
-            process.start();
+            start();
         }else{
             feedback.setText(" Please enter text in the two text fields above before pressing \"Compute\"");
         }
@@ -150,20 +151,23 @@ public class GUI extends JPanel implements ActionListener {
     /**
      * this thread runs seperate from the GUI to do all the processing so the GUI does not freeze up
      */
-    Thread process = new Thread(){
-        public void run(){
-            try{
+
+    protected void start(){
+         SwingWorker<Void, Void> calc = new SwingWorker<Void,Void>(){
+            public Void doInBackground(){
                 sentence1 = new Sentence(inTA1.getText());
                 sentence2 = new Sentence(inTA2.getText());
-                float relevancy = SentenceProcessing.calcRelevancy(sentence1, sentence2);
-                feedback.setText(TextOut(relevancy));
-                progress.setIndeterminate(false);
-            }catch (Exception e){
-                e.printStackTrace();
+                relevancy = SentenceProcessing.calcRelevancy(sentence1, sentence2);
+                return null;
             }
 
-        }
-    };
+            public void done(){
+                feedback.setText(TextOut(relevancy));
+                progress.setIndeterminate(false);
+            }
+        };
+
+    }
 
     /**
      * runs the applet
