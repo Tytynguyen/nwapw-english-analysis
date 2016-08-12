@@ -192,7 +192,7 @@ public class WordProcessing {
 			 * Plots the rough weighted data from before on a sigmoid function.
 			 * This is used to transfer the earlier rough numbers into a percentage number
 			 */
-			relevancy = (float) (200*(1/(1+Math.pow(Math.E,-(relevancy/5)))-0.5));
+			relevancy = (float) (200*(1/(1+Math.pow(Math.E,-(relevancy/2.2)))-0.5));
 			//relevancy = (float) Math.min(100,Math.pow(relevancy, 2)/25f);
 		}else{
 			if(allWord1.size() == 0 || allWord2.size() == 0){
